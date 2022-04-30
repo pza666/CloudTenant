@@ -8,6 +8,8 @@ import '../src/assets/font-icon/iconfont.css'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
+
+// 引入面包屑组件为全局组件
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb'
 Vue.component('BreadCrumb', BreadCrumb)
 
