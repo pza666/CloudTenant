@@ -6,7 +6,7 @@
             <el-button>退出</el-button>
         </el-header>
 
-        <!-- 侧边栏区域 -->
+        <!-- 侧边栏及中间内容区域 -->
         <Sidebar></Sidebar>
     </el-container>
 </template>
@@ -20,23 +20,27 @@
     }
 </script>
 <style lang="less" scoped>
-    /* 顶部背景、文字和按钮的样式 */
-    .el-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background-color: #2295ff;
-        height: 80px !important;
+    .el-container {
+        background-color: #eaedf1;
 
-        .cloud-tenant {
-            font-size: 30px;
-            color: #eee;
-        }
+        /* 顶部背景、文字和按钮的样式 */
+        .el-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #2295ff;
+            height: 80px !important;
 
-        .el-button {
-            font-size: 16px;
-            color: #2295ff;
-            font-weight: 700;
+            .cloud-tenant {
+                font-size: 30px;
+                color: #eee;
+            }
+
+            .el-button {
+                font-size: 16px;
+                color: #2295ff;
+                font-weight: 700;
+            }
         }
     }
 </style>

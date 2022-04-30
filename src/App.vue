@@ -13,4 +13,12 @@
     margin: 0;
     padding: 0;
   }
+
+  .el-card {
+    margin: 20px;
+  }
+
+  .el-table {
+    margin-top: 20px;
+  }
 </style>
