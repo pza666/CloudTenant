@@ -19,6 +19,6 @@
   }
 
   .el-table {
-    margin-top: 20px;
+    margin: 20px 0;
   }
 </style>
