@@ -30,9 +30,11 @@
         },
         methods: {
             // 点击登录回调
-            submitForm() {
+            async submitForm() {
                 let uReg = /[a-zA-Z0-9]{6,10}/
                 let pReg = /[0-9]{6,10}/
+                const result = await this.$request('house/index?currentPage=1&sizePage=6&houseType=0')
+                console.log(result);
                 let { username, password } = this
                 if (!uReg.test(username) || !pReg.test(password)) {
                     return this.$message({ type: 'error', message: '请输入正确的用户名或密码' });

@@ -71,7 +71,6 @@
     </el-main>
 </template>
 <script>
-    import request from '../../axios/index.js'
     export default {
         name: 'AdminInfo',
         data() {
@@ -159,7 +158,7 @@
         methods: {
             // 获取管理用户列表信息
             async getadminInfoList() {
-                const result = await request('user')
+                // const result = await request('user')
                 console.log(result)
             },
             // 处理查询管理员操作

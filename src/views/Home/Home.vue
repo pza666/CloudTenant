@@ -4,7 +4,7 @@
     <el-header>
       <img class="logoImg" src="@/assets/logo.png" title="云租客后台管理系统" alt="云租客后台管理系统">
       <span class="cloud-tenant">云租客后台管理系统</span>
-      <el-button>退出</el-button>
+      <el-button @click="logout">退出</el-button>
     </el-header>
 
     <!-- 侧边栏及中间内容区域 -->
@@ -17,6 +17,12 @@
     name: "Home",
     components: {
       Sidebar,
+    },
+    methods: {
+      // 退出登录的回调
+      logout() {
+        this.$router.push('/login')
+      },
     },
   };
 </script>
