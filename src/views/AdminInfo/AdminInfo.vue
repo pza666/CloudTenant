@@ -5,17 +5,17 @@
 
         <!-- 卡片视图区域 -->
         <el-card>
-            <!-- 顶部搜索与添加用户 -->
+            <!-- 顶部搜索与添加管理员模块 -->
             <el-row :gutter="36">
                 <el-col :span="10">
-                    <el-input placeholder="请输入要查询的用户名" clearable v-model="username">
-                        <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
+                    <el-input placeholder="请输入要查询的管理人员" clearable v-model="adminname">
+                        <el-button type="primary" slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
                     </el-input>
                 </el-col>
                 <el-button type="primary" @click="handleAdd">添加用户</el-button>
             </el-row>
             <!-- 中间表格数据 -->
-            <el-table border :data="tableData">
+            <el-table border :data="adminData">
                 <el-table-column align="center" label="#" type="index"></el-table-column>
                 <el-table-column align="center" label="姓名" prop="name"></el-table-column>
                 <el-table-column align="center" label="邮箱地址" prop="name"></el-table-column>
@@ -40,26 +40,26 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <!-- 底部分页器 @size-change="handleSizeChange" @current-change="handleCurrentChange" -->
-            <el-pagination :current-page="1" :page-sizes="[5, 10, 15, 20]" :page-size="10"
-                layout="->, total, sizes, prev, pager, next, jumper" :total="400">
+            <!-- 底部分页器 @current-change="handleCurrentChange" -->
+            <el-pagination background @size-change="handleSizeChange" :current-page="1" :page-sizes="[5, 10, 15, 20]"
+                :page-size="10" layout="->, total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
         </el-card>
 
         <!-- 添加用户模块，给每一个表单项设置宽度就会在一行否则是两行显示，也可在 form 添加 inline 成表单内联 -->
         <el-dialog @close="resetForm" title="添加用户" :visible.sync="dialogFormVisible" width="50%">
-            <el-form ref="userInfoRef" :rules="userInfoRules" :model="userInfo" label-width="80px">
-                <el-form-item label="姓名" prop="username">
-                    <el-input v-model="userInfo.username" placeholder="请输入您的姓名"></el-input>
+            <el-form ref="adminInfoRef" :rules="adminInfoRules" :model="adminInfo" label-width="80px">
+                <el-form-item label="姓名" prop="adminname">
+                    <el-input v-model="adminInfo.adminname" placeholder="请输入您的姓名"></el-input>
                 </el-form-item>
                 <el-form-item label="邮箱地址" prop="email">
-                    <el-input v-model="userInfo.email" placeholder="请输入您的邮箱地址"></el-input>
+                    <el-input v-model="adminInfo.email" placeholder="请输入您的邮箱地址"></el-input>
                 </el-form-item>
                 <el-form-item label="手机号码" prop="iphone">
-                    <el-input v-model="userInfo.iphone" placeholder="请输入您的手机号码"></el-input>
+                    <el-input v-model="adminInfo.iphone" placeholder="请输入您的手机号码"></el-input>
                 </el-form-item>
                 <el-form-item label="用户职位" prop="role">
-                    <el-input v-model="userInfo.role" placeholder="请输入您的权限职务"></el-input>
+                    <el-input v-model="adminInfo.role" placeholder="请输入您的权限职务"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -113,19 +113,20 @@
             // }
             return {
                 navData: ['后台管理', '管理员'],    // 面包屑文字数据
-                username: '',   // 搜索的用户名
-                tableData: [{ name: '王小虎' }],    // 表格数据
+                total: 0,   // 页面数据总条目数
+                adminname: '',   // 搜索的用户名
+                adminData: [{ name: '王小虎' }],    // 表格数据
                 status: true,    // 按钮状态
                 dialogFormVisible: false,   // 控制添加用户弹出框的显示与隐藏
-                userInfo: {
-                    username: '',
+                adminInfo: {
+                    adminname: '',
                     email: '',
                     iphone: '',
                     role: ''
                 },   // 添加的管理用户信息
-                userInfoRules: {
+                adminInfoRules: {
                     // 第一个对象校验的是否输入了值，第二个对象是校验输入的值是否合法
-                    username: [
+                    adminname: [
                         { required: true, message: '请输入您的姓名', trigger: 'blur' },
                         { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
                     ],
@@ -145,11 +146,11 @@
             }
         },
         mounted() {
-            this.getUserInfoList()
+            this.getadminInfoList()
         },
         methods: {
             // 获取管理用户列表信息
-            async getUserInfoList() {
+            async getadminInfoList() {
                 const result = await request('user')
                 console.log(result)
             },
@@ -167,24 +168,28 @@
             },
             // 提交表单数据发请求
             handleForm() {
-                this.$refs.userInfoRef.validate(valid => {
+                this.$refs.adminInfoRef.validate(valid => {
                     if (!valid) {
                         return
                     }
-                    this.getUserInfoList()
+                    this.getadminInfoList()
                     this.dialogFormVisible = false
                 })
             },
             // 重置表单校验结果以及清除数据
             resetForm() {
                 this.dialogFormVisible = false
-                this.userInfo = {
-                    username: '',
+                this.adminInfo = {
+                    adminname: '',
                     email: '',
                     iphone: '',
                     role: ''
                 }
-                this.$refs.userInfoRef.resetFields()
+                this.$refs.adminInfoRef.resetFields()
+            },
+            // 页面显示条目个数发生改变调用该回调
+            handleSizeChange(pageSize) {
+                this.pageSize = pageSize
             }
         },
     }

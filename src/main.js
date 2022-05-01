@@ -9,6 +9,8 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
+// 蓝色：#2295ff  橙色：#fdbd09  字体色：#fff  背景色：#eee
+
 // 引入面包屑组件为全局组件
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb'
 Vue.component('BreadCrumb', BreadCrumb)
