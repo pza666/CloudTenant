@@ -42,6 +42,7 @@
             }
         },
         computed: {
+            // 计算页面数据如果不足一页以上的时候隐藏分页器
             SorH() {
                 return this.pageSize >= this.total ? true : false
             }

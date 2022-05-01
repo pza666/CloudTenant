@@ -41,8 +41,9 @@
                 </el-table-column>
             </el-table>
             <!-- 底部分页器 @current-change="handleCurrentChange" -->
-            <el-pagination background @size-change="handleSizeChange" :current-page="1" :page-sizes="[5, 10, 15, 20]"
-                :page-size="10" layout="->, total, sizes, prev, pager, next, jumper" :total="total">
+            <el-pagination :hide-on-single-page="SorH" background @size-change="handleSizeChange" :current-page="1"
+                :page-sizes="[5, 10, 15, 20]" :page-size="pageSize" layout="->, total, sizes, prev, pager, next, jumper"
+                :total="total">
             </el-pagination>
         </el-card>
 
@@ -114,6 +115,7 @@
             return {
                 navData: ['后台管理', '管理员'],    // 面包屑文字数据
                 total: 0,   // 页面数据总条目数
+                pageSize: 10,    // 每一页显示多少条数据
                 adminname: '',   // 搜索的用户名
                 adminData: [{ name: '王小虎' }],    // 表格数据
                 status: true,    // 按钮状态
@@ -143,6 +145,12 @@
                         { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
                     ],
                 },   // 添加管理用户信息时的表单校验
+            }
+        },
+        computed: {
+            // 计算页面数据如果不足一页以上的时候隐藏分页器
+            SorH() {
+                return this.pageSize >= this.total ? true : false
             }
         },
         mounted() {
