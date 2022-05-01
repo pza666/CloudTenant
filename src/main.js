@@ -15,6 +15,10 @@ Vue.use(ElementUI);
 import BreadCrumb from '@/components/BreadCrumb/BreadCrumb'
 Vue.component('BreadCrumb', BreadCrumb)
 
+// 将封装的axios请求挂载到Vue的原型上
+import request from './axios/index.js'
+Vue.prototype.$request = request
+
 Vue.config.productionTip = false
 
 new Vue({
