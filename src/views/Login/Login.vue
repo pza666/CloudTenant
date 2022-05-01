@@ -2,22 +2,20 @@
     <div class="login-container">
         <div class="login-box">
             <h1>登录</h1>
-            <form action="">
-                <div class="item">
-                    <input type="text" v-model="username" required>
-                    <label for="">用户名</label>
-                </div>
-                <div class="item">
-                    <input type="password" v-model="password" required>
-                    <label for="">密码</label>
-                </div>
-                <button class="btn" @click="submitForm">登录
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </form>
+            <div class="item">
+                <input type="text" v-model="username" required>
+                <label for="">用户名</label>
+            </div>
+            <div class="item">
+                <input type="password" v-model="password" required>
+                <label for="">密码</label>
+            </div>
+            <button class="btn" @click="submitForm">登录
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </div>
 </template>
@@ -33,14 +31,14 @@
         methods: {
             // 点击登录回调
             submitForm() {
+                let uReg = /[a-zA-Z0-9]{6,10}/
+                let pReg = /[0-9]{6,10}/
                 let { username, password } = this
-                console.log(!!password);
-                if (username.replace(' ', '') === '' || password.replace(' ', '') === '') {
-                    console.log(2);
+                if (!uReg.test(username) || !pReg.test(password)) {
                     return this.$message({ type: 'error', message: '请输入正确的用户名或密码' });
                 }
-                // 发请求并且
-                console.log(3);
+                // 发请求并且跳转到首页
+                this.$router.replace('/home')
             }
         },
     }
