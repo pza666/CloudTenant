@@ -42,18 +42,17 @@
                     </template>
                 </el-table-column>
             </el-table>
-<<<<<<< HEAD
-            <!-- 底部分页器 @current-change="handleCurrentChange" -->
-            <el-pagination :hide-on-single-page="SorH" background @size-change="handleSizeChange" :current-page="1"
-                :page-sizes="[5, 10, 15, 20]" :page-size="pageSize" layout="->, total, sizes, prev, pager, next, jumper"
-                :total="total">
-=======
-            <!-- 底部分页器 -->
-            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[1, 10, 15, 20]" :page-size="pageSize"
-                layout="->, total, sizes, prev, pager, next, jumper" :total="total">
->>>>>>> AdminInfo
-            </el-pagination>
+            <<<<<<< HEAD <!-- 底部分页器 @current-change="handleCurrentChange" -->
+                <el-pagination :hide-on-single-page="SorH" background @size-change="handleSizeChange" :current-page="1"
+                    :page-sizes="[5, 10, 15, 20]" :page-size="pageSize"
+                    layout="->, total, sizes, prev, pager, next, jumper" :total="total">
+                    =======
+                    <!-- 底部分页器 -->
+                    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                        :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[1, 10, 15, 20]"
+                        :page-size="pageSize" layout="->, total, sizes, prev, pager, next, jumper" :total="total">
+                        >>>>>>> AdminInfo
+                    </el-pagination>
         </el-card>
 
         <!-- 添加用户模块，给每一个表单项设置宽度就会在一行否则是两行显示，也可在 form 添加 inline 成表单内联 -->
@@ -124,12 +123,9 @@
                 navData: ['后台管理', '管理员'],    // 面包屑文字数据
                 title: '',
                 total: 0,   // 页面数据总条目数
-<<<<<<< HEAD
                 pageSize: 10,    // 每一页显示多少条数据
-=======
                 pageSize: 1,   // 控制每一页显示的条目数
                 pageNum: 1,  // 当前页码值，默认为1
->>>>>>> AdminInfo
                 adminname: '',   // 搜索的用户名
                 adminData: [],    // 表格数据
                 status: true,    // 按钮状态
