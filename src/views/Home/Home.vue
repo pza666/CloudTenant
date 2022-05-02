@@ -21,6 +21,7 @@
     methods: {
       // 退出登录的回调
       logout() {
+        localStorage.removeItem('token')
         this.$router.push('/login')
       },
     },

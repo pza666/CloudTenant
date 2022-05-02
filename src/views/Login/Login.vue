@@ -10,7 +10,7 @@
                 <input type="password" v-model="password" required>
                 <label for="">密码</label>
             </div>
-            <button class="btn" @click="submitForm(111)">登录
+            <button class="btn" @click="submitForm">登录
                 <span></span>
                 <span></span>
                 <span></span>
