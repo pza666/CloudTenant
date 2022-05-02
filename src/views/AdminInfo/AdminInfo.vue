@@ -23,8 +23,8 @@
                 <el-table-column align="center" label="职位权限" prop="postition"></el-table-column>
                 <el-table-column align="center" label="状态">
                     <template slot-scope="scoped">
-                        <el-switch v-model="scoped.row.status>1" :disabled="scoped.row.status==2?false:true"
-                            @change="handlestatusChange"></el-switch>
+                        <el-switch v-model="scoped.row.status>1" @change="handlestatusChange(scoped.row)">
+                        </el-switch>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="操作">
@@ -146,7 +146,6 @@
                 pageNum: 1,  // 当前页码值，默认为1
                 adminname: '',   // 搜索的管理员名
                 adminData: [],    // 表格数据
-                status: true,    // 按钮状态
                 dialogFormVisible: false,   // 控制添加管理员弹出框的显示与隐藏
                 adminInfo: {
                     name: '',
@@ -234,11 +233,26 @@
             },
             // 处理查询管理员操作
             handleSearch() {
-                this.adminname
+                // console.log(this.adminname)
+                console.log(this.adminInfo)
             },
             // 处理状态按钮改变的回调
-            handlestatusChange() {
-                console.log(this.adminData);
+            async handlestatusChange(adminInfo) {
+                let { status, phone } = adminInfo
+                status = status == 1 ? 2 : 1
+                const { data } = await this.$request.post(`admin/upStatus?phone=${phone}&status=${status}`)
+                if (data.code === 200) {
+                    this.$message({
+                        type: 'success',
+                        message: '修改管理用户权限成功!'
+                    })
+                    this.getadminInfoList()
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '修改失败，请稍后再试!'
+                    })
+                }
             },
             // 提交表单数据发请求
             handleForm() {
