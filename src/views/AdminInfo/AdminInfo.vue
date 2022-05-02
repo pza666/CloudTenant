@@ -211,8 +211,6 @@
                 pageSize = this.pageSize
                 // 1、解构获取到的数据
                 const { data } = await this.$request(`admin/index?currentPage=${pageNum}&sizePage=${pageSize}`)
-                // console.log(data);
-                // return
                 const { data: dataList, code } = data
                 const { records, total } = dataList
 
