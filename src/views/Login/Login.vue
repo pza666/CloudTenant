@@ -3,14 +3,14 @@
         <div class="login-box">
             <h1>登录</h1>
             <div class="item">
-                <input type="text" v-model="username" required>
+                <input type="text" v-model="phone" required>
                 <label for="">用户名</label>
             </div>
             <div class="item">
                 <input type="password" v-model="password" required>
                 <label for="">密码</label>
             </div>
-            <button class="btn" @click="submitForm">登录
+            <button class="btn" @click="submitForm(111)">登录
                 <span></span>
                 <span></span>
                 <span></span>
@@ -24,7 +24,7 @@
         name: 'Login',
         data() {
             return {
-                username: '',
+                phone: '',
                 password: ''
             }
         },
@@ -33,12 +33,12 @@
             async submitForm() {
                 let uReg = /[a-zA-Z0-9]{6,10}/
                 let pReg = /[0-9]{6,10}/
-                const result = await this.$request('house/index?currentPage=1&sizePage=6&houseType=0')
-                console.log(result);
-                let { username, password } = this
-                if (!uReg.test(username) || !pReg.test(password)) {
+                let { phone, password } = this
+                if (!uReg.test(phone) || !pReg.test(password)) {
                     return this.$message({ type: 'error', message: '请输入正确的用户名或密码' });
                 }
+                // 登录发请求的操作都在Vuex里面进行操作
+                this.$store.dispatch('login/submitForm', { phone, password })
                 // 发请求并且跳转到首页
                 this.$router.replace('/home')
             }
