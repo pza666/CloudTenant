@@ -362,7 +362,7 @@
                             type: 'success',
                             message: '删除成功!'
                         })
-                        this.getadminInfoList(this.adminData.length == 1 ? this.pageNum-- : this.pageNum)
+                        this.getadminInfoList(this.adminData.length == 1 ? (this.pageNum <= 1 ? 1 : this.pageNum--) : this.pageNum)
                     } else {
                         this.$message({
                             type: 'info',
