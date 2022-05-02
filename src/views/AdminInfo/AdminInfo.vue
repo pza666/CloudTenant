@@ -23,7 +23,8 @@
                 <el-table-column align="center" label="职位权限" prop="postition"></el-table-column>
                 <el-table-column align="center" label="状态">
                     <template slot-scope="scoped">
-                        <el-switch v-model="status" @change="handlestatusChange"></el-switch>
+                        <el-switch v-model="scoped.row.status>1" :disabled="scoped.row.status==2?false:true"
+                            @change="handlestatusChange"></el-switch>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="操作">
@@ -46,7 +47,7 @@
             </el-table>
             <!-- 底部分页器 -->
             <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[1, 10, 15, 20]" :page-size="pageSize"
+                :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[2, 10, 15, 20]" :page-size="pageSize"
                 layout="->, total, sizes, prev, pager, next, jumper" :total="total">
             </el-pagination>
         </el-card>
@@ -141,7 +142,7 @@
                 title: '',
                 total: 0,   // 页面数据总条目数
                 pageSize: 10,    // 每一页显示多少条数据
-                pageSize: 1,   // 控制每一页显示的条目数
+                pageSize: 2,   // 控制每一页显示的条目数
                 pageNum: 1,  // 当前页码值，默认为1
                 adminname: '',   // 搜索的管理员名
                 adminData: [],    // 表格数据
@@ -237,7 +238,7 @@
             },
             // 处理状态按钮改变的回调
             handlestatusChange() {
-                console.log(2);
+                console.log(this.adminData);
             },
             // 提交表单数据发请求
             handleForm() {
@@ -265,14 +266,6 @@
                 }
                 // 如果不是修改密码模块的话，判断是否为添加管理员模块，是的话清空，不是的话直接关闭
                 this.dialogFormVisible = false
-                if (this.title === '添加管理员') {
-                    this.adminInfo = {
-                        name: '',
-                        email: '',
-                        phone: '',
-                        postition: ''
-                    }
-                }
                 // 因为做多了一层浅拷贝，所以原对象和传入的对象已不是同一个，移除数据和校验结果并不会有数据出错的问题
                 this.$refs.adminInfoRef.resetFields()
             },
@@ -289,7 +282,15 @@
             // 添加管理员、修改管理员、修改密码的回调处理
             addOrEdit(title, adminInfo = null) {
                 this.title = title
+                // 如果不在添加管理员中清空对应的数据的话，先点击修改管理员后会将数据赋值到管理员信息对象，
+                // 再点击添加管理员会有回显，所以每次进入时都要清空一下
                 if (title === '添加管理员') {
+                    this.adminInfo = {
+                        name: '',
+                        email: '',
+                        phone: '',
+                        postition: ''
+                    }
                     this.dialogFormVisible = true
                 } else if (title === '修改管理员') {
                     // 因为只有一层对象，所以要做扩展运算为浅拷贝，否则数据会有误
@@ -341,19 +342,25 @@
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
-                }).then(async () => {
+                }).then(async (res) => {
                     const { data } = await this.$request.post(`admin/delete?phone=${adminInfo.phone}`)
-                    if (data.code == 200) {
+                    if (res === 'confirm') {
+                        console.log();
                         this.$message({
                             type: 'success',
                             message: '删除成功!'
+                        })
+                        this.getadminInfoList(this.adminData.length == 1 ? this.pageNum-- : this.pageNum)
+                    } else {
+                        this.$message({
+                            type: 'info',
+                            message: '取消删除!'
                         });
-                        this.getadminInfoList()
                     }
                 }).catch(() => {
                     this.$message({
-                        type: 'info',
-                        message: '已取消删除!'
+                        type: 'error',
+                        message: '删除失败!'
                     });
                 });
             }
