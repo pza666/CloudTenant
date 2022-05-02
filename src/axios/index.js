@@ -20,7 +20,7 @@ const request = axios.create({
 // })
 request.interceptors.request.use(config => {
     Nprogress.start()
-    config.headers.Authorization = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODg4ODg4ODg4OCIsImlhdCI6MTY1MTQyMTY1MywiZXhwIjoxNjUyMDI2NDUzfQ.I9CmQJQ_7f4y9BSHZNSNyY4XslKT3LzXFonbw4qOJo4vG7MN1YCAo2HTi_h1A_swfkzLVp5aIFMyZdGoVvD0Kg"
+    config.headers.Authorization = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODExMTExMTExMSIsImlhdCI6MTY1MTQ4MzUyOSwiZXhwIjoxNjUyMDg4MzI5fQ.mgGOoufCvs-2PBGdeABAC9C9vJCqgFNbpoCBOd-kRFTk_04AbfypAD7INAALA4EqdsZ5u2ywcW6fzLDSAP1w1g"
     return config
 })
 
