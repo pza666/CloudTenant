@@ -28,34 +28,28 @@
                 </el-table-column>
                 <el-table-column align="center" label="操作">
                     <template slot-scope="scoped">
-                        <el-tooltip effect="dark" content="修改" placement="top">
+                        <el-tooltip effect="dark" content="修改信息" placement="top">
                             <el-button icon="el-icon-edit" size="mini" type="primary"
                                 @click="addOrEdit('修改用户',scoped.row)"></el-button>
+                        </el-tooltip>
+                        <el-tooltip effect="dark" content="修改密码" placement="top">
+                            <el-button icon="el-icon-setting" size="mini" type="warning"></el-button>
                         </el-tooltip>
                         <el-tooltip effect="dark" content="删除" placement="top">
                             <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteAdmin(scoped.row)">
                             </el-button>>
                         </el-tooltip>
-                        <el-tooltip effect="dark" content="分配权限" placement="top">
-                            <el-button icon="el-icon-setting" size="mini" type="warning"></el-button>
-                        </el-tooltip>
                     </template>
                 </el-table-column>
             </el-table>
-            <<<<<<< HEAD <!-- 底部分页器 @current-change="handleCurrentChange" -->
-                <el-pagination :hide-on-single-page="SorH" background @size-change="handleSizeChange" :current-page="1"
-                    :page-sizes="[5, 10, 15, 20]" :page-size="pageSize"
-                    layout="->, total, sizes, prev, pager, next, jumper" :total="total">
-                    =======
-                    <!-- 底部分页器 -->
-                    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                        :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[1, 10, 15, 20]"
-                        :page-size="pageSize" layout="->, total, sizes, prev, pager, next, jumper" :total="total">
-                        >>>>>>> AdminInfo
-                    </el-pagination>
+            <!-- 底部分页器 -->
+            <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[1, 10, 15, 20]" :page-size="pageSize"
+                layout="->, total, sizes, prev, pager, next, jumper" :total="total">
+            </el-pagination>
         </el-card>
 
-        <!-- 添加用户模块，给每一个表单项设置宽度就会在一行否则是两行显示，也可在 form 添加 inline 成表单内联 -->
+        <!-- 添加或更新管理员模块，给每一个表单项设置宽度就会在一行否则是两行显示，也可在 form 添加 inline 成表单内联 -->
         <el-dialog @close="resetForm" :title="title" :visible.sync="dialogFormVisible" width="50%">
             <el-form ref="adminInfoRef" :rules="adminInfoRules" :model="adminInfo" label-width="80px">
                 <el-form-item label="手机号码" prop="phone">
@@ -74,6 +68,27 @@
             <div slot="footer" class="dialog-footer">
                 <el-button @click="resetForm">取 消</el-button>
                 <el-button type="primary" @click="handleForm">确 定</el-button>
+            </div>
+        </el-dialog>
+        <!-- 修改密码模块 -->
+        <el-dialog @close="resetPasswordForm" :title="修改密码" :visible.sync="dialogPasswordFormVisible" width="50%">
+            <el-form ref="passwordInfoRef" :rules="passwordInfoRules" :model="passwordInfo" label-width="80px">
+                <el-form-item label="手机号码" prop="phone">
+                    <el-input disabled v-model="passwordInfo.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="旧密码" prop="oldPassword">
+                    <el-input v-model="passwordInfo.oldPassword" placeholder="请输入您的旧密码"></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="newPassword">
+                    <el-input v-model="passwordInfo.newPassword" placeholder="请输入您的新密码"></el-input>
+                </el-form-item>
+                <el-form-item label="再次输入" prop="new1Password">
+                    <el-input v-model="passwordInfo.new1Password" placeholder="请再输入一次"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="resetForm">取 消</el-button>
+                <el-button type="primary" @click="handleEditPasswordForm">确 定</el-button>
             </div>
         </el-dialog>
     </el-main>
@@ -155,6 +170,7 @@
                         { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
                     ],
                 },   // 添加管理用户信息时的表单校验
+                j: {}
             }
         },
         computed: {
@@ -165,11 +181,6 @@
         },
         mounted() {
             this.getadminInfoList()
-        },
-        computed: {
-            SorH() {
-                return this.pageSize >= this.total ? true : false
-            }
         },
         methods: {
             // 获取管理用户列表信息，默认是第一页并且取5条数据
