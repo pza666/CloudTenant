@@ -204,7 +204,6 @@
             this.getadminInfoList()
         },
         methods: {
-<<<<<<< HEAD
             // 获取管理管理员列表信息，默认是第一页并且取5条数据
             async getadminInfoList(pageNum = 1, pageSize = 5) {
                 // 切换页码和切换条目数时，重新设置页码数和每页取多少条数据
@@ -231,12 +230,6 @@
                 })
                 this.adminData = records
                 this.total = total
-=======
-            // 获取管理用户列表信息
-            async getadminInfoList() {
-                // const result = await request('user')
-                console.log(result)
->>>>>>> Login
             },
             // 处理查询管理员操作
             handleSearch() {

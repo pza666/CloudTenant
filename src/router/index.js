@@ -7,14 +7,11 @@ const routes = [
   {
     path: '/',
     redirect: '/admininfo'
-<<<<<<< HEAD
-=======
   },
   {
     path: '/login',
     name: 'login',
     component: () => import(/* webpackChunkName: "Home" */ '../views/Login/Login.vue')
->>>>>>> Login
   },
   {
     path: '/home',
