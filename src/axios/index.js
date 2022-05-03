@@ -20,14 +20,10 @@ const request = axios.create({
 // })
 request.interceptors.request.use(config => {
     Nprogress.start()
-<<<<<<< HEAD
     const tokenStr = localStorage.getItem('token')
     if (tokenStr) {
         config.headers.Authorization = tokenStr
     }
-=======
-    config.headers.Authorization = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxODg4ODg4ODg4OCIsImlhdCI6MTY1MTU2OTUyNywiZXhwIjoxNjUyMTc0MzI3fQ.ZazM4eKbw08y1r_TJh9rFtbtyN9w1SfYSP3omHl4BsaBQIJ4T-kDG4RoioSostiDnGFYYI8pZGsrJEdiwghXwA'
->>>>>>> AdminInfo
     return config
 })
 
