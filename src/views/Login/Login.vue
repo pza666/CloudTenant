@@ -30,7 +30,7 @@
         },
         methods: {
             // 点击登录回调
-            async submitForm() {
+            submitForm() {
                 let uReg = /[a-zA-Z0-9]{6,10}/
                 let pReg = /[0-9]{6,10}/
                 let { phone, password } = this
@@ -40,7 +40,7 @@
                 // 登录发请求的操作都在Vuex里面进行操作
                 this.$store.dispatch('login/submitForm', { phone, password })
                 // 发请求并且跳转到首页
-                this.$router.replace('/home')
+                this.$router.push('/home')
             }
         },
     }
