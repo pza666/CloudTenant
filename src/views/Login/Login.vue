@@ -37,10 +37,8 @@
                 if (!uReg.test(phone) || !pReg.test(password)) {
                     return this.$message({ type: 'error', message: '请输入正确的用户名或密码' });
                 }
-                // 登录发请求的操作都在Vuex里面进行操作
+                // 登录发请求以及路由跳转等操作都在Vuex里面进行操作
                 this.$store.dispatch('login/submitForm', { phone, password })
-                // 发请求并且跳转到首页
-                this.$router.push('/home')
             }
         },
     }

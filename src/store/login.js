@@ -12,6 +12,9 @@ const mutations = {
     SUBMITFORM(state, val) {
         state.token = val
         localStorage.setItem('token', state.token)
+        // 因为发请求验证的时候是个异步，在发请求的时候并不能获取到token
+        // 所以在Vuex里等token设置完毕再跳转即可
+        router.push('/home')
     }
 }
 const state = {
