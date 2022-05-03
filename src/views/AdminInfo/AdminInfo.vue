@@ -456,7 +456,7 @@
                 }).catch(() => {
                     this.$message({
                         type: 'error',
-                        message: '删除失败!'
+                        message: '不好意思，您的权限不足以删除管理员信息!'
                     });
                 });
             }
