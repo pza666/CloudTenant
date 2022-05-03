@@ -1,4 +1,5 @@
 import request from '@/axios/index.js'
+import router from '../router/index.js'
 const actions = {
     // 点击登录获取到token值后到mutations对state数据进行操作
     async submitForm({ commit }, val) {
