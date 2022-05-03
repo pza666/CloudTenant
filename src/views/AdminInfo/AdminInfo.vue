@@ -8,7 +8,7 @@
             <!-- 顶部搜索与添加管理员模块 -->
             <el-row :gutter="36">
                 <el-col :span="10">
-                    <el-input placeholder="请输入要查询的管理人员" clearable v-model="adminname">
+                    <el-input placeholder="请输入要查询的管理人员" @clear="clearInput" clearable v-model="keyword">
                         <el-button type="primary" slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
                     </el-input>
                 </el-col>
@@ -97,6 +97,10 @@
     </el-main>
 </template>
 <script>
+    // 引入sha1插件后进行加密传输到数据库后修改密码
+    import sha1 from 'sha1'
+    // 引入lodash对搜索进行节流
+    import _ from 'lodash'
     export default {
         name: 'AdminInfo',
         data() {
@@ -141,10 +145,9 @@
                 navData: ['后台管理', '管理员'],    // 面包屑文字数据
                 title: '',
                 total: 0,   // 页面数据总条目数
-                pageSize: 10,    // 每一页显示多少条数据
                 pageSize: 2,   // 控制每一页显示的条目数
                 pageNum: 1,  // 当前页码值，默认为1
-                adminname: '',   // 搜索的管理员名
+                keyword: '',   // 搜索的管理员名
                 adminData: [],    // 表格数据
                 dialogFormVisible: false,   // 控制添加管理员弹出框的显示与隐藏
                 adminInfo: {
@@ -175,8 +178,8 @@
                 dialogPasswordFormVisible: false,    // 控制修改密码弹出框的显示与隐藏
                 passwordInfo: {
                     phone: '',
+                    newPasswd: '',
                     oldPasswd: '',
-                    newPasswd: ''
                 },    // 重置密码的表单信息
                 passwordInfoRules: {
                     oldPasswd: [
@@ -205,15 +208,14 @@
         },
         methods: {
             // 获取管理管理员列表信息，默认是第一页并且取5条数据
-            async getadminInfoList(pageNum = 1, pageSize = 5) {
-                // 切换页码和切换条目数时，重新设置页码数和每页取多少条数据
+            async getadminInfoList(pageNum = 1, pageSize = 2) {
+                // 切换页码和切换条目数时，用最新的值重置当前页码和每页数据的条目数
                 pageNum = this.pageNum
                 pageSize = this.pageSize
                 // 1、解构获取到的数据
                 const { data } = await this.$request(`admin/index?currentPage=${pageNum}&sizePage=${pageSize}`)
                 const { data: dataList, code } = data
                 const { records, total } = dataList
-
                 // 2、判断状态码是否为200，不是的话返回一个错误信息
                 if (code !== 200) {
                     return this.$message({
@@ -229,39 +231,78 @@
                 this.adminData = records
                 this.total = total
             },
-            // 处理查询管理员操作
-            handleSearch() {
-                // console.log(this.adminname)
-                console.log(this.adminInfo)
+            // 处理查询管理员操作，用了节流操作，防止用户疯狂点击搜索
+            handleSearch: _.throttle(async function (pnum = 1, key, psize = 2) {
+                let { pageNum, pageSize, keyword } = this
+                // 判断key的原始类型是否为string，因为第一次搜索触发的时候是一个事件对象（点击搜索查询）
+                // 但当切换页码和页面条目数的时候已经是可以拿到输入框的字符串了，如果是有值则赋值
+                if (typeof key === 'string') {
+                    pageNum = pnum
+                    pageSize = psize
+                    keyword = key
+                } else if (!this.keyword.replaceAll(' ', '')) {
+                    return
+                } else {
+                    // 不仅要修改请求时的当前页，还要修改本身页面的当前页
+                    this.pageNum = pageNum = 1
+                }
+                // 查询的用户不存在捕获错误并且给用户提示后重新获取列表数据
+                try {
+                    const { data } = await this.$request(`admin/search?currentPage=${pageNum}&sizePage=${pageSize}&keyword=${keyword}`)
+                    this.adminData = data.data.records
+                    this.total = data.data.total
+                    this.$message({
+                        type: 'success',
+                        message: `获取数据成功，共有 ${this.total} 条数据!`
+                    })
+                } catch (error) {
+                    this.$message({
+                        type: 'error',
+                        message: '无此用户，请重新查询!'
+                    })
+                    this.keyword = ''
+                    this.getadminInfoList()
+                }
+            }, 500),
+            // 清空文本框的回调函数
+            clearInput() {
+                // 不仅要修改请求时的当前页，还要修改本身页面的当前页
+                this.pageNum = 1
+                this.getadminInfoList(1, this.pageSize)
             },
             // 处理状态按钮改变的回调
             async handlestatusChange(adminInfo) {
                 let { status, phone } = adminInfo
+                console.log(adminInfo);
+                // 如果状态是封禁状态1就改为2普通管理员，反之如果是2普通管理员改为1封禁状态
                 status = status == 1 ? 2 : 1
-                const { data } = await this.$request.post(`admin/upStatus?phone=${phone}&status=${status}`)
-                if (data.code === 200) {
+                // 声明一个变量准备接收传回来的值，并准备下一步操作
+                let data = null
+                try {
+                    // 如果权限不够捕获并且提示用户权限不足
+                    data = await this.$request.post(`admin/upStatus?phone=${phone}&status=${status}`)
+                    console.log(data);
+                } catch (error) {
+                    // 如果该管理员的权限不是超级管理员则进行提示，并返回
+                    this.$message({
+                        type: 'error',
+                        message: '不好意思，您当前权限不足以修改管理员状态!'
+                    })
+                    return
+                }
+                // 如果符合所有条件并且修改成功提示用户
+                if (data.data.code === 200) {
                     this.$message({
                         type: 'success',
                         message: '修改管理用户权限成功!'
                     })
-                    this.getadminInfoList()
-                } else {
-                    this.$message({
-                        type: 'error',
-                        message: '修改失败，请稍后再试!'
-                    })
-                }
-            },
-            // 提交表单数据发请求
-            handleForm() {
-                this.$refs.adminInfoRef.validate(async valid => {
-                    if (!valid) {
-                        return
+                    // 有和没有关键词的情况下在修改了对应的状态都是停留在当前的页面
+                    if (this.keyword.replaceAll(' ', '')) {
+                        this.handleSearch(this.pageNum, this.keyword, this.pageSize)
+                    } else {
+                        this.getadminInfoList()
                     }
-                    await this.$request.post('admin/saveOrUp', this.adminInfo)
-                    this.getadminInfoList()
-                    this.dialogFormVisible = false
-                })
+                }
             },
             // 重置表单校验结果以及清除数据
             resetForm() {
@@ -276,20 +317,32 @@
                     this.$refs.passwordInfoRef.resetFields()
                     return
                 }
-                // 如果不是修改密码模块的话，判断是否为添加管理员模块，是的话清空，不是的话直接关闭
                 this.dialogFormVisible = false
-                // 因为做多了一层浅拷贝，所以原对象和传入的对象已不是同一个，移除数据和校验结果并不会有数据出错的问题
                 this.$refs.adminInfoRef.resetFields()
-            },
-            // 页面显示条目个数发生改变调用该回调
-            handleSizeChange(pageSize) {
-                this.pageSize = pageSize
-                this.getadminInfoList(pageSize)
             },
             // 页码切换获取最新页码并且赋值重新发请求
             handleCurrentChange(pageNum) {
+                // 先将最新的当前页码赋值给全局的页码使之能在请求里正常赋值
                 this.pageNum = pageNum
-                this.getadminInfoList(pageNum)
+                // 如果搜索框不为空的话，则将当前页码发给查询出来的数据进行更新页码
+                if (this.keyword.replaceAll(' ', '')) {
+                    this.handleSearch(pageNum, this.keyword, this.pageSize)
+                } else {
+                    // 如果keyword是空的话则直接更新页码值重新发请求
+                    this.getadminInfoList(pageNum, this.pageSize)
+                }
+            },
+            // 页面显示条目个数发生改变调用该回调
+            handleSizeChange(pageSize) {
+                // 上下基本同理，只不过在切换页面条目数的时候最好将页码值重置为1
+                this.pageSize = pageSize
+                if (this.keyword.replaceAll(' ', '')) {
+                    this.pageNum = 1
+                    this.handleSearch(this.pageNum, this.keyword, pageSize)
+                } else {
+                    this.pageNum = 1
+                    this.getadminInfoList(this.pageNum, pageSize)
+                }
             },
             // 添加管理员、修改管理员、修改密码的回调处理
             addOrEdit(title, adminInfo = null) {
@@ -305,7 +358,7 @@
                     }
                     this.dialogFormVisible = true
                 } else if (title === '修改管理员') {
-                    // 因为只有一层对象，所以要做扩展运算为浅拷贝，否则数据会有误
+                    // 因为只有一层对象，所以要做扩展运算(浅拷贝）为浅拷贝，所以原对象和传入的对象已不是同一个，移除数据和校验结果的时候并不会有数据出错的问题
                     this.adminInfo = { ...adminInfo }
                     this.dialogFormVisible = true
                     return
@@ -314,13 +367,40 @@
                     this.dialogPasswordFormVisible = true
                 }
             },
+            // 修改或添加管理员提交表单数据的回调
+            handleForm() {
+                this.$refs.adminInfoRef.validate(async valid => {
+                    if (!valid) {
+                        return
+                    }
+                    await this.$request.post('admin/saveOrUp', this.adminInfo)
+                    if (this.keyword.replaceAll(' ', '')) {
+                        this.handleSearch(this.pageNum, this.keyword, this.pageSize)
+                    } else {
+                        this.keyword = ''
+                        this.getadminInfoList(1, this.pageSize)
+                    }
+                    this.dialogFormVisible = false
+                    this.$message({
+                        type: 'success',
+                        message: '修改成功!'
+                    })
+                })
+            },
             // 修改管理员密码的确定按钮回调
             handleEditPasswordForm() {
+                /*  主要是校验输入的旧密码是否和管理员本身的旧密码一致
+                    旧密码是否和新密码一致
+                    新密码和二次输入的新密码是否一致  */
                 this.$refs.passwordInfoRef.validate(async valid => {
                     if (!valid) {
                         return
                     } else {
-                        const { oldPasswd, newPasswd, new1Password } = this.passwordInfo
+                        let { oldPasswd, newPasswd, new1Password } = this.passwordInfo
+                        oldPasswd = sha1(oldPasswd)
+                        newPasswd = sha1(newPasswd)
+                        new1Password = sha1(new1Password)
+                        console.log(oldPasswd);
                         if (oldPasswd !== this.adminData[0].password) {
                             this.$message({
                                 type: 'error',
@@ -337,12 +417,17 @@
                                 message: '新密码不能与旧密码重复，请重新输入!'
                             })
                         } else {
-                            const { data } = await this.$request.post('admin/editPasswd', this.passwordInfo)
+                            // 在发请求前将数据浅拷贝一份，否则请求还没发完就会被加密的数据覆盖
+                            let passwordInfo = { ...this.passwordInfo }
+                            passwordInfo.oldPasswd = oldPasswd
+                            passwordInfo.newPasswd = newPasswd
+                            await this.$request.post('admin/editPasswd', passwordInfo)
                             this.$message({
                                 type: 'success',
-                                message: '密码修改成功!'
+                                message: '密码修改成功，请重新登录!'
                             })
-                            this.getadminInfoList()
+                            localStorage.removeItem('token')
+                            this.$router.push('/login')
                             this.dialogPasswordFormVisible = false
                         }
                     }
@@ -355,20 +440,19 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(async (res) => {
-                    const { data } = await this.$request.post(`admin/delete?phone=${adminInfo.phone}`)
-                    if (res === 'confirm') {
-                        console.log();
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        })
-                        this.getadminInfoList(this.adminData.length == 1 ? (this.pageNum <= 1 ? 1 : this.pageNum--) : this.pageNum)
+                    // 如果点击的是确定按钮会到then里执行，删除成功后判断是否有keyword，如果有，表示当前是在查询管理员，要调用第一个分支继续获取搜索管理员的数据
+                    await this.$request.post(`admin/delete?phone=${adminInfo.phone}`)
+                    // 如果当前删除后返回的页面数据是1的话，表示删除的是最后一条数据，在当前页-1的时候要先判断当前页是否是第一页是的话不改变，不是的话往前见一页
+                    const pageNum = this.adminData.length == 1 ? (this.pageNum <= 1 ? 1 : this.pageNum--) : this.pageNum
+                    if (!!this.keyword) {
+                        this.handleSearch(pageNum)
                     } else {
-                        this.$message({
-                            type: 'info',
-                            message: '取消删除!'
-                        });
+                        this.getadminInfoList(pageNum)
                     }
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    })
                 }).catch(() => {
                     this.$message({
                         type: 'error',
