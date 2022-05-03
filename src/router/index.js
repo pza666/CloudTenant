@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/userinfo'
   },
   {
     path: '/login',
@@ -35,7 +35,7 @@ const router = new VueRouter({
   routes
 })
 // 挂载路由导航守卫：注意不要让带有路径的next重复执行，否则会栈溢出，执行顺序很重要
-router.beforeEach((to, from, next) => {
+/*router.beforeEach((to, from, next) => {
   // 如果不是去登录页的话先获取是否有对应的token值，也就是是否登录状态中
   const tokenStr = window.localStorage.getItem('token')
   // next()：放行    next('/login')：加上路径强制跳转   next(false)：返回来时的路由
@@ -52,5 +52,5 @@ router.beforeEach((to, from, next) => {
     // 第四种情况：在有token之后除了去登录页其他页面都可以去
     next()
   }
-})
+})*/
 export default router
