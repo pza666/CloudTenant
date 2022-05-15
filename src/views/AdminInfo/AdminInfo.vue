@@ -8,11 +8,7 @@
       <!-- 顶部搜索与添加管理员模块 -->
       <el-row :gutter="36">
         <el-col :span="10">
-<<<<<<< HEAD
           <el-input placeholder="请输入要查询的管理人员" @clear="clearInput" clearable v-model="keyword">
-=======
-          <el-input placeholder="请输入要查询的管理人员" clearable v-model="adminname">
->>>>>>> UserInfo
             <el-button type="primary" slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
           </el-input>
         </el-col>
@@ -27,18 +23,12 @@
         <el-table-column align="center" label="职位权限" prop="postition"></el-table-column>
         <el-table-column align="center" label="状态">
           <template slot-scope="scoped">
-<<<<<<< HEAD
             <el-switch v-model="scoped.row.status > 1" @change="handlestatusChange(scoped.row)"></el-switch>
-=======
-            <el-switch v-model="scoped.row.status>1" @change="handlestatusChange(scoped.row)">
-            </el-switch>
->>>>>>> UserInfo
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scoped">
             <el-tooltip effect="dark" content="修改信息" placement="top">
-<<<<<<< HEAD
               <el-button icon="el-icon-edit" size="mini" type="primary" @click="addOrEdit('修改管理员', scoped.row)"></el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="修改密码" placement="top">
@@ -46,41 +36,20 @@
             </el-tooltip>
             <el-tooltip effect="dark" content="删除" placement="top">
               <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteAdmin(scoped.row)"></el-button>
-              >
-=======
-              <el-button icon="el-icon-edit" size="mini" type="primary" @click="addOrEdit('修改管理员',scoped.row)"></el-button>
-            </el-tooltip>
-            <el-tooltip effect="dark" content="修改密码" placement="top">
-              <el-button icon="el-icon-setting" size="mini" type="warning" @click="addOrEdit('修改密码',scoped.row)">
-              </el-button>
-            </el-tooltip>
-            <el-tooltip effect="dark" content="删除" placement="top">
-              <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteAdmin(scoped.row)">
-              </el-button>>
->>>>>>> UserInfo
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
       <!-- 底部分页器 -->
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[2, 10, 15, 20]" :page-size="pageSize"
-<<<<<<< HEAD
         layout="->, total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
-=======
-        layout="->, total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
->>>>>>> UserInfo
     </el-card>
 
     <!-- 添加或更新管理员模块，给每一个表单项设置宽度就会在一行否则是两行显示，也可在 form 添加 inline 成表单内联 -->
     <el-dialog @close="resetForm" :title="title" :visible.sync="dialogFormVisible" width="50%">
       <el-form ref="adminInfoRef" :rules="adminInfoRules" :model="adminInfo" label-width="80px">
         <el-form-item label="手机号码" prop="phone">
-<<<<<<< HEAD
-          <el-input :disabled="title == '修改管理员'" v-model="adminInfo.phone" placeholder="请输入您的手机号码"></el-input>
-=======
           <el-input :disabled="title=='修改管理员'" v-model="adminInfo.phone" placeholder="请输入您的手机号码"></el-input>
->>>>>>> UserInfo
         </el-form-item>
         <el-form-item label="姓名" prop="name">
           <el-input v-model="adminInfo.name" placeholder="请输入您的姓名"></el-input>
