@@ -41,7 +41,7 @@
         </el-table-column>
       </el-table>
       <!-- 底部分页器 -->
-      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[2, 10, 15, 20]" :page-size="pageSize"
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[5, 10, 15, 20]" :page-size="pageSize"
         layout="->, total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
     </el-card>
 
@@ -90,13 +90,10 @@
   </el-main>
 </template>
 <script>
-<<<<<<< HEAD
 // 引入sha1插件后进行加密传输到数据库后修改密码
 import sha1 from "sha1";
 // 引入lodash对搜索进行节流
 import _ from "lodash";
-=======
->>>>>>> UserInfo
 export default {
   name: "AdminInfo",
   data() {
@@ -143,16 +140,9 @@ export default {
       navData: ["后台管理", "管理员"], // 面包屑文字数据
       title: "",
       total: 0, // 页面数据总条目数
-<<<<<<< HEAD
-      pageSize: 2, // 控制每一页显示的条目数
+      pageSize: 5, // 控制每一页显示的条目数
       pageNum: 1, // 当前页码值，默认为1
       keyword: "", // 搜索的管理员名
-=======
-      pageSize: 10, // 每一页显示多少条数据
-      pageSize: 2, // 控制每一页显示的条目数
-      pageNum: 1, // 当前页码值，默认为1
-      adminname: "", // 搜索的管理员名
->>>>>>> UserInfo
       adminData: [], // 表格数据
       dialogFormVisible: false, // 控制添加管理员弹出框的显示与隐藏
       adminInfo: {
@@ -188,13 +178,8 @@ export default {
       dialogPasswordFormVisible: false, // 控制修改密码弹出框的显示与隐藏
       passwordInfo: {
         phone: "",
-<<<<<<< HEAD
         newPasswd: "",
         oldPasswd: "",
-=======
-        oldPasswd: "",
-        newPasswd: "",
->>>>>>> UserInfo
       }, // 重置密码的表单信息
       passwordInfoRules: {
         oldPasswd: [
@@ -238,13 +223,8 @@ export default {
   },
   methods: {
     // 获取管理管理员列表信息，默认是第一页并且取5条数据
-<<<<<<< HEAD
     async getadminInfoList(pageNum = 1, pageSize = 2) {
       // 切换页码和切换条目数时，用最新的值重置当前页码和每页数据的条目数
-=======
-    async getadminInfoList(pageNum = 1, pageSize = 5) {
-      // 切换页码和切换条目数时，重新设置页码数和每页取多少条数据
->>>>>>> UserInfo
       pageNum = this.pageNum;
       pageSize = this.pageSize;
       // 1、解构获取到的数据

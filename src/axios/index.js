@@ -9,11 +9,7 @@ const request = axios.create({
     // baseURL: 'http://10.50.72.2:8081/',
     baseURL: 'http://127.0.0.1:8081/',
     // 设置请求最大时限
-<<<<<<< HEAD
     timeout: 1000,
-=======
-    // timeout: 5000
->>>>>>> UserInfo
 });
 
 // 请求拦截器，如果通过post方式请求只需要在挂载的axios请求后 .post
