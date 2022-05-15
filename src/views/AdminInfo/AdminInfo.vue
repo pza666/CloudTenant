@@ -8,7 +8,11 @@
       <!-- 顶部搜索与添加管理员模块 -->
       <el-row :gutter="36">
         <el-col :span="10">
+<<<<<<< HEAD
           <el-input placeholder="请输入要查询的管理人员" @clear="clearInput" clearable v-model="keyword">
+=======
+          <el-input placeholder="请输入要查询的管理人员" clearable v-model="adminname">
+>>>>>>> UserInfo
             <el-button type="primary" slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
           </el-input>
         </el-col>
@@ -23,12 +27,18 @@
         <el-table-column align="center" label="职位权限" prop="postition"></el-table-column>
         <el-table-column align="center" label="状态">
           <template slot-scope="scoped">
+<<<<<<< HEAD
             <el-switch v-model="scoped.row.status > 1" @change="handlestatusChange(scoped.row)"></el-switch>
+=======
+            <el-switch v-model="scoped.row.status>1" @change="handlestatusChange(scoped.row)">
+            </el-switch>
+>>>>>>> UserInfo
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scoped">
             <el-tooltip effect="dark" content="修改信息" placement="top">
+<<<<<<< HEAD
               <el-button icon="el-icon-edit" size="mini" type="primary" @click="addOrEdit('修改管理员', scoped.row)"></el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="修改密码" placement="top">
@@ -37,20 +47,40 @@
             <el-tooltip effect="dark" content="删除" placement="top">
               <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteAdmin(scoped.row)"></el-button>
               >
+=======
+              <el-button icon="el-icon-edit" size="mini" type="primary" @click="addOrEdit('修改管理员',scoped.row)"></el-button>
+            </el-tooltip>
+            <el-tooltip effect="dark" content="修改密码" placement="top">
+              <el-button icon="el-icon-setting" size="mini" type="warning" @click="addOrEdit('修改密码',scoped.row)">
+              </el-button>
+            </el-tooltip>
+            <el-tooltip effect="dark" content="删除" placement="top">
+              <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteAdmin(scoped.row)">
+              </el-button>>
+>>>>>>> UserInfo
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
       <!-- 底部分页器 -->
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNum" :hide-on-single-page="SorH" :page-sizes="[2, 10, 15, 20]" :page-size="pageSize"
+<<<<<<< HEAD
         layout="->, total, sizes, prev, pager, next, jumper" :total="total"></el-pagination>
+=======
+        layout="->, total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+>>>>>>> UserInfo
     </el-card>
 
     <!-- 添加或更新管理员模块，给每一个表单项设置宽度就会在一行否则是两行显示，也可在 form 添加 inline 成表单内联 -->
     <el-dialog @close="resetForm" :title="title" :visible.sync="dialogFormVisible" width="50%">
       <el-form ref="adminInfoRef" :rules="adminInfoRules" :model="adminInfo" label-width="80px">
         <el-form-item label="手机号码" prop="phone">
+<<<<<<< HEAD
           <el-input :disabled="title == '修改管理员'" v-model="adminInfo.phone" placeholder="请输入您的手机号码"></el-input>
+=======
+          <el-input :disabled="title=='修改管理员'" v-model="adminInfo.phone" placeholder="请输入您的手机号码"></el-input>
+>>>>>>> UserInfo
         </el-form-item>
         <el-form-item label="姓名" prop="name">
           <el-input v-model="adminInfo.name" placeholder="请输入您的姓名"></el-input>
@@ -91,10 +121,13 @@
   </el-main>
 </template>
 <script>
+<<<<<<< HEAD
 // 引入sha1插件后进行加密传输到数据库后修改密码
 import sha1 from "sha1";
 // 引入lodash对搜索进行节流
 import _ from "lodash";
+=======
+>>>>>>> UserInfo
 export default {
   name: "AdminInfo",
   data() {
@@ -141,9 +174,16 @@ export default {
       navData: ["后台管理", "管理员"], // 面包屑文字数据
       title: "",
       total: 0, // 页面数据总条目数
+<<<<<<< HEAD
       pageSize: 2, // 控制每一页显示的条目数
       pageNum: 1, // 当前页码值，默认为1
       keyword: "", // 搜索的管理员名
+=======
+      pageSize: 10, // 每一页显示多少条数据
+      pageSize: 2, // 控制每一页显示的条目数
+      pageNum: 1, // 当前页码值，默认为1
+      adminname: "", // 搜索的管理员名
+>>>>>>> UserInfo
       adminData: [], // 表格数据
       dialogFormVisible: false, // 控制添加管理员弹出框的显示与隐藏
       adminInfo: {
@@ -179,8 +219,13 @@ export default {
       dialogPasswordFormVisible: false, // 控制修改密码弹出框的显示与隐藏
       passwordInfo: {
         phone: "",
+<<<<<<< HEAD
         newPasswd: "",
         oldPasswd: "",
+=======
+        oldPasswd: "",
+        newPasswd: "",
+>>>>>>> UserInfo
       }, // 重置密码的表单信息
       passwordInfoRules: {
         oldPasswd: [
@@ -224,8 +269,13 @@ export default {
   },
   methods: {
     // 获取管理管理员列表信息，默认是第一页并且取5条数据
+<<<<<<< HEAD
     async getadminInfoList(pageNum = 1, pageSize = 2) {
       // 切换页码和切换条目数时，用最新的值重置当前页码和每页数据的条目数
+=======
+    async getadminInfoList(pageNum = 1, pageSize = 5) {
+      // 切换页码和切换条目数时，重新设置页码数和每页取多少条数据
+>>>>>>> UserInfo
       pageNum = this.pageNum;
       pageSize = this.pageSize;
       // 1、解构获取到的数据
@@ -234,6 +284,7 @@ export default {
       );
       const { data: dataList, code } = data;
       const { records, total } = dataList;
+<<<<<<< HEAD
       // 2、判断状态码是否为200，不是的话返回一个错误信息
       if (code !== 200) {
         return this.message("error", "获取管理管理员数据失败！");
@@ -277,10 +328,33 @@ export default {
       // 不仅要修改请求时的当前页，还要修改本身页面的当前页
       this.pageNum = 1;
       this.getadminInfoList(1, this.pageSize);
+=======
+
+      // 2、判断状态码是否为200，不是的话返回一个错误信息
+      if (code !== 200) {
+        return this.$message({
+          type: "error",
+          message: "获取管理管理员数据失败！",
+        });
+      }
+      // 3、是的话提示管理员后赋值给对应的变量
+      this.$message({
+        type: "success",
+        message: "获取管理管理员数据成功！",
+      });
+      this.adminData = records;
+      this.total = total;
+    },
+    // 处理查询管理员操作
+    handleSearch() {
+      // console.log(this.adminname)
+      console.log(this.adminInfo);
+>>>>>>> UserInfo
     },
     // 处理状态按钮改变的回调
     async handlestatusChange(adminInfo) {
       let { status, phone } = adminInfo;
+<<<<<<< HEAD
       console.log(adminInfo);
       // 如果状态是封禁状态1就改为2普通管理员，反之如果是2普通管理员改为1封禁状态
       status = status == 1 ? 2 : 1;
@@ -307,6 +381,35 @@ export default {
           this.getadminInfoList();
         }
       }
+=======
+      status = status == 1 ? 2 : 1;
+      const { data } = await this.$request.post(
+        `admin/upStatus?phone=${phone}&status=${status}`
+      );
+      if (data.code === 200) {
+        this.$message({
+          type: "success",
+          message: "修改管理用户权限成功!",
+        });
+        this.getadminInfoList();
+      } else {
+        this.$message({
+          type: "error",
+          message: "修改失败，请稍后再试!",
+        });
+      }
+    },
+    // 提交表单数据发请求
+    handleForm() {
+      this.$refs.adminInfoRef.validate(async (valid) => {
+        if (!valid) {
+          return;
+        }
+        await this.$request.post("admin/saveOrUp", this.adminInfo);
+        this.getadminInfoList();
+        this.dialogFormVisible = false;
+      });
+>>>>>>> UserInfo
     },
     // 重置表单校验结果以及清除数据
     resetForm() {
@@ -321,6 +424,7 @@ export default {
         this.$refs.passwordInfoRef.resetFields();
         return;
       }
+<<<<<<< HEAD
       this.dialogFormVisible = false;
       this.$refs.adminInfoRef.resetFields();
     },
@@ -347,6 +451,22 @@ export default {
         this.pageNum = 1;
         this.getadminInfoList(this.pageNum, pageSize);
       }
+=======
+      // 如果不是修改密码模块的话，判断是否为添加管理员模块，是的话清空，不是的话直接关闭
+      this.dialogFormVisible = false;
+      // 因为做多了一层浅拷贝，所以原对象和传入的对象已不是同一个，移除数据和校验结果并不会有数据出错的问题
+      this.$refs.adminInfoRef.resetFields();
+    },
+    // 页面显示条目个数发生改变调用该回调
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      this.getadminInfoList(pageSize);
+    },
+    // 页码切换获取最新页码并且赋值重新发请求
+    handleCurrentChange(pageNum) {
+      this.pageNum = pageNum;
+      this.getadminInfoList(pageNum);
+>>>>>>> UserInfo
     },
     // 添加管理员、修改管理员、修改密码的回调处理
     addOrEdit(title, adminInfo = null) {
@@ -362,7 +482,11 @@ export default {
         };
         this.dialogFormVisible = true;
       } else if (title === "修改管理员") {
+<<<<<<< HEAD
         // 因为只有一层对象，所以要做扩展运算(浅拷贝）为浅拷贝，所以原对象和传入的对象已不是同一个，移除数据和校验结果的时候并不会有数据出错的问题
+=======
+        // 因为只有一层对象，所以要做扩展运算为浅拷贝，否则数据会有误
+>>>>>>> UserInfo
         this.adminInfo = { ...adminInfo };
         this.dialogFormVisible = true;
         return;
@@ -371,6 +495,7 @@ export default {
         this.dialogPasswordFormVisible = true;
       }
     },
+<<<<<<< HEAD
     // 修改或添加管理员提交表单数据的回调
     handleForm() {
       this.$refs.adminInfoRef.validate(async (valid) => {
@@ -393,10 +518,15 @@ export default {
       /*  主要是校验输入的旧密码是否和管理员本身的旧密码一致
                     旧密码是否和新密码一致
                     新密码和二次输入的新密码是否一致  */
+=======
+    // 修改管理员密码的确定按钮回调
+    handleEditPasswordForm() {
+>>>>>>> UserInfo
       this.$refs.passwordInfoRef.validate(async (valid) => {
         if (!valid) {
           return;
         } else {
+<<<<<<< HEAD
           let { oldPasswd, newPasswd, new1Password } = this.passwordInfo;
           oldPasswd = sha1(oldPasswd);
           newPasswd = sha1(newPasswd);
@@ -417,6 +547,34 @@ export default {
             this.message("success", "密码修改成功，请重新登录!");
             localStorage.removeItem("token");
             this.$router.push("/login");
+=======
+          const { oldPasswd, newPasswd, new1Password } = this.passwordInfo;
+          if (oldPasswd !== this.adminData[0].password) {
+            this.$message({
+              type: "error",
+              message: "旧密码输入有误，请重新输入!",
+            });
+          } else if (newPasswd !== new1Password) {
+            this.$message({
+              type: "error",
+              message: "新密码不一致，请重新输入!",
+            });
+          } else if (this.adminData[0].password === newPasswd) {
+            this.$message({
+              type: "error",
+              message: "新密码不能与旧密码重复，请重新输入!",
+            });
+          } else {
+            const { data } = await this.$request.post(
+              "admin/editPasswd",
+              this.passwordInfo
+            );
+            this.$message({
+              type: "success",
+              message: "密码修改成功!",
+            });
+            this.getadminInfoList();
+>>>>>>> UserInfo
             this.dialogPasswordFormVisible = false;
           }
         }
@@ -429,6 +587,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
+<<<<<<< HEAD
         .then(async () => {
           // 如果点击的是确定按钮会到then里执行，删除成功后判断是否有keyword，如果有，表示当前是在查询管理员，要调用第一个分支继续获取搜索管理员的数据
           await this.$request.post(`admin/delete?phone=${adminInfo.phone}`);
@@ -456,6 +615,39 @@ export default {
         message,
       });
     },
+=======
+        .then(async (res) => {
+          const { data } = await this.$request.post(
+            `admin/delete?phone=${adminInfo.phone}`
+          );
+          if (res === "confirm") {
+            console.log();
+            this.$message({
+              type: "success",
+              message: "删除成功!",
+            });
+            this.getadminInfoList(
+              this.adminData.length == 1
+                ? this.pageNum <= 1
+                  ? 1
+                  : this.pageNum--
+                : this.pageNum
+            );
+          } else {
+            this.$message({
+              type: "info",
+              message: "取消删除!",
+            });
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "error",
+            message: "删除失败!",
+          });
+        });
+    },
+>>>>>>> UserInfo
   },
 };
 </script>
