@@ -256,10 +256,10 @@ export default {
 <<<<<<< HEAD
       // 2、判断状态码是否为200，不是的话返回一个错误信息
       if (code !== 200) {
-        return this.message("error", "获取管理管理员数据失败！");
+        return this.message("error", "获取管理管理员数据失败!");
       }
       // 3、是的话提示管理员后赋值给对应的变量
-      this.message("success", "获取管理管理员数据成功！");
+      this.message("success", "获取管理管理员数据成功!");
       this.adminData = records;
       this.total = total;
     },
