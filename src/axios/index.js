@@ -8,7 +8,7 @@ const request = axios.create({
     // 配置根路径方便请求
     baseURL: 'http://10.50.72.2:8081/',
     // 设置请求最大时限
-    // timeout: 5000
+    timeout: 1000
 })
 
 // 请求拦截器，如果通过post方式请求只需要在挂载的axios请求后 .post
