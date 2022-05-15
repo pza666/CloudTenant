@@ -7,7 +7,7 @@
       <!-- 顶部搜索用户模块 -->
       <el-row :gutter="36">
         <el-col :span="10">
-          <el-input placeholder="请输入要查询的用户名" clearable v-model="username">
+          <el-input placeholder="请输入要查询的用户名" @clear="clearInput" clearable v-model="username">
             <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
           </el-input>
         </el-col>
@@ -21,26 +21,43 @@
         <el-table-column align="center" label="微信号" prop="weixin"></el-table-column>
         <el-table-column align="center" label="头像" prop="avatarUrl"></el-table-column>
         <el-table-column align="center" label="操作">
-          <template slot-scope="scoped">
+          <template slot-scope="{row}">
             <el-tooltip effect="dark" content="修改信息" placement="top">
-              <el-button icon="el-icon-edit" size="mini" type="primary" @click="addOrEdit('修改管理员',scoped.row)"></el-button>
+              <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEditUser(row)"></el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="删除" placement="top">
-              <el-button icon="el-icon-delete" size="mini" type="danger" @click="deleteAdmin(scoped.row)">
+              <el-button icon="el-icon-delete" size="mini" type="danger" @click="handledeleteUser(row)">
               </el-button>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
       <!-- 底部分页器 -->
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :hide-on-single-page="SorH" background :current-page="pageNum" :page-sizes="[5, 20, 25, 30]" :page-size="pageSize"
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :hide-on-single-page="SorH" background :current-page="pageNum" :page-sizes="[1, 2, 25, 30]" :page-size="pageSize"
         layout="->, total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </el-card>
+
+    <!-- 修改用户信息模块 -->
+    <el-dialog title="修改信息" :visible.sync="editUserDialogVisible" width="50%" :before-close="handleClose">
+      <el-form :model="userInfoForm" ref="userInfoRef" :rules="userInfoRules" label-width="80px">
+        <el-form-item required disabled label="手机号" prop="phone">
+          <el-input type="number" v-model="userInfoForm.phone" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="用户名" prop="nickname">
+          <el-input type="text" v-model="userInfoForm.nickname"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取 消</el-button>
+        <el-button type="primary" @click="handleDetermine">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-main>
 </template>
 <script>
-import { userInfo } from "@/axios/userApi.js";
+import { userInfo, searchUser, deleteUser, editUser } from "@/axios/userApi.js";
+import _ from "lodash";
 export default {
   name: "UserInfo",
   data() {
@@ -50,7 +67,21 @@ export default {
       userData: [], // 表格数据对象
       total: 10, // 数据总条目
       pageNum: 1, // 当前页码值
-      pageSize: 5, // 当前页面显示的数据条数
+      pageSize: 1, // 当前页面显示的数据条数
+      userInfoForm: {}, // 当前修改的用户的对应信息
+      editNickname: "", // 待修改的nickname
+      userInfoRules: {
+        nickname: [
+          { required: true, message: "请输入您的用户名", trigger: "blur" },
+          {
+            min: 2,
+            max: 10,
+            message: "长度在 2 到 10 个字符",
+            trigger: "blur",
+          },
+        ],
+      }, // 修改用户信息的校验规则
+      editUserDialogVisible: false, // 控制修改用户弹出框的显示与隐藏
     };
   },
   computed: {
@@ -63,25 +94,36 @@ export default {
     this.getUserInfo();
   },
   methods: {
-    // 获取用户数据的回调
-    async getUserInfo() {
-      const { data } = await userInfo(this.pageNum, this.pageSize);
+    // 封装了初次渲染和查询数据时的弹出框
+    getInfo(data, msg, getOrQuery) {
       let { data: userData, status, total } = data;
       if (status !== 200) {
         return this.$message({
           type: "error",
-          message: "获取用户信息数据失败！",
+          message: msg,
         });
       }
       this.userData = userData;
       this.total = total;
       this.$message({
         type: "success",
-        message: "成功获取用户信息！",
+        message: `${getOrQuery}用户信息成功，共有${total}条数据！`,
       });
     },
+    // 获取用户数据的回调
+    async getUserInfo() {
+      const { data } = await userInfo(this.pageNum, this.pageSize);
+      this.getInfo(data, "获取用户信息数据失败！", "获取");
+    },
     // 查询用户名的回调
-    handleSearch() {},
+    handleSearch: _.throttle(async function () {
+      let { data } = await searchUser(this.username);
+      this.getInfo(data, "查询用户信息数据失败！", "查询");
+    }, 500),
+    // 清除文本框的回调
+    clearInput() {
+      this.getUserInfo();
+    },
     // 页码值发生改变调用该回调
     handleCurrentChange(pageNum) {
       this.pageNum = pageNum;
@@ -91,6 +133,59 @@ export default {
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
       this.getUserInfo();
+    },
+    // 修改用户信息的回调handledeleteUser
+    handleEditUser(userInfo) {
+      // 直接赋值是浅拷贝数据会随着一起改动，这里只有一层用扩展也是深拷贝，并且能防止数据回显
+      this.userInfoForm = { ...userInfo };
+      this.editNickname = userInfo.nickname;
+      this.editUserDialogVisible = true;
+    },
+    // 确认修改用户信息的回调
+    async handleDetermine() {
+      let { phone, nickname } = this.userInfoForm;
+      if (this.editNickname !== nickname.replaceAll(" ", "")) {
+        let { data } = await editUser(phone, nickname);
+        let { row, status } = data;
+        if (status === 200) {
+          this.$message({
+            type: "success",
+            message: `您当前成功修改了${row}条数据!`,
+          });
+          this.getUserInfo();
+        }
+      }
+      this.editUserDialogVisible = false;
+    },
+    // 删除用户信息的回调
+    handledeleteUser(userInfo) {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          let { phone } = userInfo;
+          let { data } = await deleteUser(phone);
+          this.$message({
+            type: "success",
+            message: `删除成功!共删除${data.row}条数据`,
+          });
+          console.log(this.pageNum, this.pageSize);
+          console.log(this.userData);
+          this.getUserInfo();
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    // 关闭修改用户信息弹出框的回调
+    handleClose() {
+      this.$refs.userInfoRef.resetFields();
+      this.editUserDialogVisible = false;
     },
   },
 };
