@@ -105,6 +105,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.el-container {
+  height: 100vh;
+}
 /* 首页主题内容区域样式 */
 .el-main {
   .title {
@@ -115,7 +118,7 @@ export default {
 /* 侧边栏样式 */
 .el-aside {
   width: auto !important;
-  height: 100vh;
+  height: 100%;
   background: rgba(#2295ff, 0.6);
 
   /* 需要重置菜单列表突出来的 1px 右边框像素值就不会有突兀了 */
@@ -158,7 +161,7 @@ export default {
 }
 
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 180px;
+  width: 200px;
 }
 
 /* 利用样式穿透来将图标修改成指定颜色 */

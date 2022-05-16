@@ -33,7 +33,7 @@
         </el-table-column>
       </el-table>
       <!-- 底部分页器 -->
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :hide-on-single-page="SorH" background :current-page="pageNum" :page-sizes="[1, 2, 25, 30]" :page-size="pageSize"
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :hide-on-single-page="SorH" background :current-page="pageNum" :page-sizes="[15, 20, 25, 30]" :page-size="pageSize"
         layout="->, total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </el-card>
@@ -67,7 +67,7 @@ export default {
       userData: [], // 表格数据对象
       total: 10, // 数据总条目
       pageNum: 1, // 当前页码值
-      pageSize: 1, // 当前页面显示的数据条数
+      pageSize: 15, // 当前页面显示的数据条数
       userInfoForm: {}, // 当前修改的用户的对应信息
       editNickname: "", // 待修改的nickname
       userInfoRules: {
@@ -88,6 +88,13 @@ export default {
     // 计算页面数据如果不足一页以上的时候隐藏分页器
     SorH() {
       return this.pageSize >= this.total ? true : false;
+    },
+  },
+  watch: {
+    username() {
+      if (!this.username.replaceAll(" ", "")) {
+        this.getUserInfo(this.pageNum, this.pageSize);
+      }
     },
   },
   mounted() {
@@ -111,15 +118,34 @@ export default {
       });
     },
     // 获取用户数据的回调
-    async getUserInfo() {
-      const { data } = await userInfo(this.pageNum, this.pageSize);
-      this.getInfo(data, "获取用户信息数据失败！", "获取");
+    async getUserInfo(pageNum = 1, pageSize = 15) {
+      // 在删除功能的时候，已经计算好了最新的页码值，所以这里将最新值赋予形参即可
+      pageNum = this.pageNum;
+      pageSize = this.pageSize;
+      console.log(pageNum);
+      const { data } = await userInfo(pageNum, pageSize);
+      this.getInfo(data, "获取用户信息数据失败!", "获取");
     },
     // 查询用户名的回调
-    handleSearch: _.throttle(async function () {
-      let { data } = await searchUser(this.username);
-      this.getInfo(data, "查询用户信息数据失败！", "查询");
-    }, 500),
+    handleSearch: _.throttle(async function (
+      event,
+      pageNum = 1,
+      pageSize = 15
+    ) {
+      if (!this.username.replaceAll(" ", "")) {
+        this.$message("请输入用户名再点击查询!");
+        return;
+      }
+      this.pageNum = pageNum;
+      this.pageSize = pageSize;
+      let { data } = await searchUser(
+        this.username,
+        this.pageNum,
+        this.pageSize
+      );
+      this.getInfo(data, "查询用户信息数据失败!", "查询");
+    },
+    500),
     // 清除文本框的回调
     clearInput() {
       this.getUserInfo();
@@ -127,12 +153,20 @@ export default {
     // 页码值发生改变调用该回调
     handleCurrentChange(pageNum) {
       this.pageNum = pageNum;
-      this.getUserInfo();
+      if (!this.username.replaceAll(" ", "")) {
+        this.getUserInfo(pageNum, this.pageSize);
+      } else {
+        this.handleSearch("", pageNum, this.pageSize);
+      }
     },
     // 页面显示条目个数发生改变调用该回调
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
-      this.getUserInfo();
+      if (!this.username.replaceAll(" ", "")) {
+        this.getUserInfo((this.pageNum = 1), pageSize);
+      } else {
+        this.handleSearch("", (this.pageNum = 1), pageSize);
+      }
     },
     // 修改用户信息的回调handledeleteUser
     handleEditUser(userInfo) {
@@ -142,20 +176,37 @@ export default {
       this.editUserDialogVisible = true;
     },
     // 确认修改用户信息的回调
-    async handleDetermine() {
-      let { phone, nickname } = this.userInfoForm;
-      if (this.editNickname !== nickname.replaceAll(" ", "")) {
-        let { data } = await editUser(phone, nickname);
-        let { row, status } = data;
-        if (status === 200) {
-          this.$message({
-            type: "success",
-            message: `您当前成功修改了${row}条数据!`,
-          });
-          this.getUserInfo();
+    handleDetermine() {
+      // 在点击确定的时候对表单进行验证，如果不通过直接返回出去，不发送请求
+      this.$refs.userInfoRef.validate(async (valid) => {
+        if (!valid) {
+          return;
         }
-      }
-      this.editUserDialogVisible = false;
+        // 1、先结构出需要用来修改的数据
+        let { phone, nickname } = this.userInfoForm;
+        // 2、判断是否有修改过元素，如果和原来的用户名一样不发请求
+        if (this.editNickname !== nickname.replaceAll(" ", "")) {
+          // 进来了就说明修改了，发请求更新
+          let { data } = await editUser(phone, nickname);
+          let { row, status } = data;
+          // 更新完成功后提示用户
+          if (status === 200) {
+            this.$message({
+              type: "success",
+              message: `您当前成功修改了${row}条数据!`,
+            });
+            // 3、到这里表示可能是搜索的用户修改的用户名，做判断
+            if (!this.username.replaceAll(" ", "")) {
+              // 如果搜索框为空的话，说明没有搜索，发请求获取信息，并停留在原来的页码
+              this.getUserInfo();
+            } else {
+              // 反之通过关键字定位到原来搜索的数据位置
+              this.handleSearch();
+            }
+          }
+        }
+        this.editUserDialogVisible = false;
+      });
     },
     // 删除用户信息的回调
     handledeleteUser(userInfo) {
@@ -171,9 +222,14 @@ export default {
             type: "success",
             message: `删除成功!共删除${data.row}条数据`,
           });
-          console.log(this.pageNum, this.pageSize);
-          console.log(this.userData);
-          this.getUserInfo();
+          // 如果不重新声明的话每次回退的时候，切换页码的函数会监听到，监听到后就会赋一个原来的值，导致修改无效
+          const pageNum =
+            this.userData.length === 1
+              ? this.pageNum === 1
+                ? 1
+                : this.pageNum--
+              : this.pageNum;
+          this.getUserInfo(pageNum);
         })
         .catch(() => {
           this.$message({
@@ -184,8 +240,18 @@ export default {
     },
     // 关闭修改用户信息弹出框的回调
     handleClose() {
-      this.$refs.userInfoRef.resetFields();
-      this.editUserDialogVisible = false;
+      this.$refs.userInfoRef.validate((valid) => {
+        if (!valid) {
+          this.$message({
+            type: "error",
+            message: "请输入对应格式的用户信息!",
+          });
+        } else {
+          this.$refs.userInfoRef.resetFields();
+          this.userInfoForm = {};
+          this.editUserDialogVisible = false;
+        }
+      });
     },
   },
 };
