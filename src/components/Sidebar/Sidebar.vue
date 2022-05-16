@@ -22,7 +22,43 @@
 
     <!-- 右侧主页 home 路由的内容： -->
     <el-main v-show="$route.path=='/home'">
-      <span class="title">欢迎来到云租客的后台管理系统</span>
+      <h1 class="title">欢迎来到云租客的后台管理系统</h1>
+      <el-row>
+        <el-col :span="12">
+          <el-card shadow="hover">
+            <header class="headerInfo">
+              <img class="imgLogo" title="631全都对" alt="631全都对" src="@/assets/logo.png">
+              <div class="hInfo">
+                <h1>全都队</h1>
+                <p>云租客后台管理系统，包含：后台权限、用户信息、房源信息、内容审核</p>
+              </div>
+            </header>
+            <article class="articlerInfo">
+              <div class="aInfo">
+                <p>上次登录时间：</p>
+                <!-- 登录的时候直接读取上次设置好的最新时间 -->
+                <p>{{loginTime}}</p>
+              </div>
+              <div class="aInfo">
+                <p>上次登录地点：</p>
+                <p>广东省 广州市</p>
+              </div>
+            </article>
+            <footer class="footerInfo">
+              <p><span class="fTitle">团队成员：</span>彭梓岸、杨桓国、陶富、程浩然、谢瑞辉、杨壮飞</p>
+              <p><span class="fTitle">联系方式：</span>187********</p>
+              <p><span class="fTitle">电子邮箱：</span>122*******@qq.com</p>
+              <p><span class="fTitle">产品理念：</span>云租客是一家垂直具有单一性的房地产网络平台；是一个以技术为驱动，以用户为核心，注重房源真实和经纪人信誉的专业的房屋租售平台。</p>
+            </footer>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card shadow="hover">
+            <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+            <div ref="mainEchart" style="width: 600px;height:480px;"></div>
+          </el-card>
+        </el-col>
+      </el-row>
     </el-main>
     <!-- 右侧其他路由页面：路由占位符 -->
     <router-view></router-view>
@@ -30,6 +66,7 @@
 </template>
 
 <script>
+import * as echarts from "echarts";
 export default {
   data() {
     return {
@@ -101,6 +138,81 @@ export default {
       ], // 侧边栏数据
     };
   },
+  mounted() {
+    // 基于准备好的dom，初始化echarts实例
+    let myChart = echarts.init(this.$refs.mainEchart);
+    // 指定图表的配置项和数据
+    let option = {
+      title: {
+        text: "周浏览量",
+      },
+      tooltip: {
+        trigger: "axis",
+      },
+      legend: {
+        data: ["小程序", "视频广告", "直接访问", "搜索引擎"],
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          mark: { show: true },
+          // dataView: { show: true, readOnly: false },
+          magicType: { show: true, type: ["bar", "stack", "tiled"] },
+          restore: { show: true },
+          saveAsImage: { show: true },
+        },
+      },
+      // 可成计算视图
+      // calculable: true,
+      xAxis: [
+        {
+          type: "category",
+          boundaryGap: false,
+          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+        },
+      ],
+      yAxis: [
+        {
+          type: "value",
+        },
+      ],
+      series: [
+        {
+          name: "小程序",
+          type: "line",
+          stack: "总量",
+          data: [20, 32, 10, 13, 9, 23, 50],
+        },
+        {
+          name: "视频广告",
+          type: "line",
+          stack: "总量",
+          data: [30, 22, 21, 15, 19, 33, 52],
+        },
+        {
+          name: "直接访问",
+          type: "line",
+          stack: "总量",
+          data: [32, 32, 31, 66, 39, 33, 32],
+        },
+        {
+          name: "搜索引擎",
+          type: "line",
+          stack: "总量",
+          data: [10, 21, 16, 9, 13, 16, 8],
+        },
+      ],
+    };
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+  },
+  computed: {
+    loginTime() {
+      return localStorage.getItem("loginTime")
+        ? localStorage.getItem("loginTime")
+        : "欢迎第一次来到这个界面！";
+    },
+  },
 };
 </script>
 
@@ -110,8 +222,63 @@ export default {
 }
 /* 首页主题内容区域样式 */
 .el-main {
+  // 欢迎标题的样式
   .title {
+    margin-left: 20px;
     font-size: 30px;
+  }
+  // 团队上面内容信息
+  .headerInfo {
+    display: flex;
+    align-items: center;
+    // 用padding才能把底部的线给挤下去，margin在外，border在margin内
+    padding-bottom: 26px;
+    border-bottom: 2px solid #eee;
+
+    // 团队上面内容中图片logo的样式
+    .imgLogo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin-right: 30px;
+      background-color: pink;
+    }
+    // 团队上半部分中的信息样式
+    .hInfo h1:first-child {
+      font-size: 28px;
+      text-align: center;
+    }
+    .hInfo p:last-child {
+      font-size: 20px;
+      text-indent: 2em;
+      margin-top: 12px;
+    }
+  }
+  // 团队中间内容信息
+  .articlerInfo {
+    // 用padding才能把底部的线给挤下去，margin在外，border在margin内
+    padding-bottom: 26px;
+    border-bottom: 2px solid #eee;
+    // 控制前半部分
+    .aInfo {
+      display: flex;
+      margin-top: 26px;
+      // 控制后半部分
+      p:first-child {
+        margin-right: 70px;
+        font-weight: 800;
+      }
+    }
+  }
+  // 团队下面内容信息
+  .footerInfo {
+    margin-top: 26px;
+    p {
+      padding: 6px 0;
+      .fTitle {
+        font-weight: 800;
+      }
+    }
   }
 }
 
@@ -121,7 +288,7 @@ export default {
   height: 100%;
   background: rgba(#2295ff, 0.6);
 
-  /* 需要重置菜单列表突出来的 1px 右边框像素值就不会有突兀了 */
+  /* 需要重置菜单列表突出来的 .0625rem 右边框像素值就不会有突兀了 */
   .el-menu {
     border-right: none;
 
@@ -129,7 +296,7 @@ export default {
     .icon1 {
       color: #eee;
       font-size: 26px;
-      margin: 0 16px 0 -5px;
+      margin: 0 16px 0 5px;
       text-align: center;
     }
   }
