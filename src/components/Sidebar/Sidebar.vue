@@ -241,7 +241,7 @@ export default {
       height: 150px;
       border-radius: 50%;
       margin-right: 30px;
-      background-color: pink;
+      background-color: #2295ff;
     }
     // 团队上半部分中的信息样式
     .hInfo h1:first-child {
