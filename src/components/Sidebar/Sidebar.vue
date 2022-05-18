@@ -20,7 +20,7 @@
       </el-menu>
     </el-aside>
 
-    <!-- 右侧主页 home 路由的内容： -->
+    <!-- 右侧主页如果是 home 路由时显示的内容： -->
     <el-main v-show="$route.path=='/home'">
       <h1 class="title">欢迎来到云租客的后台管理系统</h1>
       <el-row>

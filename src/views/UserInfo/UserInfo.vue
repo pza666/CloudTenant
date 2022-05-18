@@ -22,6 +22,7 @@
         <el-table-column align="center" label="头像" prop="avatarUrl"></el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="{row}">
+            <!-- 修改或删除用户的操作按钮 -->
             <el-tooltip effect="dark" content="修改信息" placement="top">
               <el-button icon="el-icon-edit" size="mini" type="primary" @click="handleEditUser(row)"></el-button>
             </el-tooltip>
@@ -62,10 +63,10 @@ export default {
   name: "UserInfo",
   data() {
     return {
-      navData: ["用户管理", "用户列表"],
+      navData: ["用户管理", "用户列表"], // 面包屑的填充数据
       username: "", // 要查询的用户名
       userData: [], // 表格数据对象
-      total: 10, // 数据总条目
+      total: 0, // 数据总条目
       pageNum: 1, // 当前页码值
       pageSize: 15, // 当前页面显示的数据条数
       userInfoForm: {}, // 当前修改的用户的对应信息
@@ -91,6 +92,7 @@ export default {
     },
   },
   watch: {
+    // 监听查询的用户名如果是空的情况下重新获取所有用户数据
     username() {
       if (!this.username.replaceAll(" ", "")) {
         this.getUserInfo(this.pageNum, this.pageSize);
@@ -103,6 +105,7 @@ export default {
   methods: {
     // 封装了初次渲染和查询数据时的弹出框
     getInfo(data, msg, getOrQuery) {
+      // 在传入的形参中，解构出需要的数据
       let { data: userData, status, total } = data;
       if (status !== 200) {
         return this.$message({
@@ -122,7 +125,6 @@ export default {
       // 在删除功能的时候，已经计算好了最新的页码值，所以这里将最新值赋予形参即可
       pageNum = this.pageNum;
       pageSize = this.pageSize;
-      console.log(pageNum);
       const { data } = await userInfo(pageNum, pageSize);
       this.getInfo(data, "获取用户信息数据失败!", "获取");
     },
@@ -132,12 +134,14 @@ export default {
       pageNum = 1,
       pageSize = 15
     ) {
+      // 搜索的时候判断搜索框是否为空，如果是空的话提示用户输入再查询并返回，不发送请求
       if (!this.username.replaceAll(" ", "")) {
         this.$message("请输入用户名再点击查询!");
         return;
       }
       this.pageNum = pageNum;
       this.pageSize = pageSize;
+      // 调用该回调的时候把最新的页码和条目数拿到，并且把关键字也传进去发请求
       let { data } = await searchUser(
         this.username,
         this.pageNum,
@@ -146,20 +150,23 @@ export default {
       this.getInfo(data, "查询用户信息数据失败!", "查询");
     },
     500),
-    // 清除文本框的回调
+    // 清除文本框重新获取数据的回调
     clearInput() {
       this.getUserInfo();
     },
     // 页码值发生改变调用该回调
     handleCurrentChange(pageNum) {
+      console.log("触发了");
+      // 1、先把最新页码值给到data中的pageNum
       this.pageNum = pageNum;
+      // 2、然后判断搜索框里是否有值，去调用对应的回调并且传入对应的参数
       if (!this.username.replaceAll(" ", "")) {
         this.getUserInfo(pageNum, this.pageSize);
       } else {
         this.handleSearch("", pageNum, this.pageSize);
       }
     },
-    // 页面显示条目个数发生改变调用该回调
+    // 页面显示条目个数发生改变调用该回调，和页码值的回调同理
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
       if (!this.username.replaceAll(" ", "")) {
@@ -168,7 +175,7 @@ export default {
         this.handleSearch("", (this.pageNum = 1), pageSize);
       }
     },
-    // 修改用户信息的回调handledeleteUser
+    // 修改用户信息的回调
     handleEditUser(userInfo) {
       // 直接赋值是浅拷贝数据会随着一起改动，这里只有一层用扩展也是深拷贝，并且能防止数据回显
       this.userInfoForm = { ...userInfo };
@@ -240,6 +247,7 @@ export default {
     },
     // 关闭修改用户信息弹出框的回调
     handleClose() {
+      // 关闭修改信息的操作先判断是否符合校验规则，不符合让其修改到符合再关闭
       this.$refs.userInfoRef.validate((valid) => {
         if (!valid) {
           this.$message({
@@ -247,6 +255,7 @@ export default {
             message: "请输入对应格式的用户信息!",
           });
         } else {
+          // 关闭的时候移除对应的校验信息以及清空数据，防止回显
           this.$refs.userInfoRef.resetFields();
           this.userInfoForm = {};
           this.editUserDialogVisible = false;
