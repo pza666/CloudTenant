@@ -6,13 +6,6 @@
   "description": "",
   "glyphs": [
     {
-      "icon_id": "1418232",
-      "name": "文章",
-      "font_class": "article",
-      "unicode": "e610",
-      "unicode_decimal": 58896
-    },
-    {
       "icon_id": "12771482",
       "name": "审核",
       "font_class": "audit",
@@ -41,13 +34,6 @@
       "unicode_decimal": 58953
     },
     {
-      "icon_id": "691687",
-      "name": "附近商家",
-      "font_class": "near",
-      "unicode": "e647",
-      "unicode_decimal": 58951
-    },
-    {
       "icon_id": "4398156",
       "name": "用户管理",
       "font_class": "users",
@@ -60,13 +46,6 @@
       "font_class": "user-info",
       "unicode": "e605",
       "unicode_decimal": 58885
-    },
-    {
-      "icon_id": "1985072",
-      "name": "最新房源",
-      "font_class": "new",
-      "unicode": "e656",
-      "unicode_decimal": 58966
     },
     {
       "icon_id": "2170955",
@@ -88,13 +67,6 @@
       "font_class": "house",
       "unicode": "e615",
       "unicode_decimal": 58901
-    },
-    {
-      "icon_id": "1321280",
-      "name": "good",
-      "font_class": "good",
-      "unicode": "e63d",
-      "unicode_decimal": 58941
     }
   ]
 }

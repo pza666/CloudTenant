@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3369576 */
-  src: url('iconfont.woff2?t=1651301313540') format('woff2'),
-       url('iconfont.woff?t=1651301313540') format('woff'),
-       url('iconfont.ttf?t=1651301313540') format('truetype');
+  src: url('iconfont.woff2?t=1652843409151') format('woff2'),
+       url('iconfont.woff?t=1652843409151') format('woff'),
+       url('iconfont.ttf?t=1652843409151') format('truetype');
 }
 
 .iconfont {
@@ -11,10 +11,6 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.icon-article:before {
-  content: "\e610";
 }
 
 .icon-audit:before {
@@ -33,20 +29,12 @@
   content: "\e649";
 }
 
-.icon-near:before {
-  content: "\e647";
-}
-
 .icon-users:before {
   content: "\e63b";
 }
 
 .icon-user-info:before {
   content: "\e605";
-}
-
-.icon-new:before {
-  content: "\e656";
 }
 
 .icon-rent-house:before {
@@ -59,9 +47,5 @@
 
 .icon-house:before {
   content: "\e615";
-}
-
-.icon-good:before {
-  content: "\e63d";
 }
 

@@ -102,11 +102,6 @@ export default {
           name: "房源信息",
           children: [
             {
-              routeName: "recommended",
-              iconName1: "icon-good",
-              childrenName: "推荐房源",
-            },
-            {
               routeName: "lease",
               iconName1: "icon-rent-house",
               childrenName: "租赁房源",
@@ -116,22 +111,17 @@ export default {
               iconName1: "icon-secondary",
               childrenName: "二手房源",
             },
-            {
-              routeName: "latest",
-              iconName1: "icon-new",
-              childrenName: "最新房源",
-            },
           ],
         },
         {
           id: "4",
           iconName: "icon-audit",
-          name: "内容审核",
+          name: "房源审核",
           children: [
             {
               routeName: "article",
-              iconName: "icon-near-info",
-              childrenName: "审核文章",
+              iconName1: "icon-near-info",
+              childrenName: "房源发布",
             },
           ],
         },
@@ -217,11 +207,16 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// 侧边栏图标
+/deep/ .el-submenu__title {
+  padding-left: 13px !important;
+}
 .el-container {
   height: 100vh;
 }
 /* 首页主题内容区域样式 */
 .el-main {
+  background-color: #eaedf1;
   // 欢迎标题的样式
   .title {
     margin-left: 20px;
@@ -300,11 +295,6 @@ export default {
       text-align: center;
     }
   }
-}
-
-/* 主题内容颜色 */
-.el-main {
-  background-color: #eaedf1;
 }
 
 /* 三条竖的样式 ||| */
