@@ -42,15 +42,69 @@
 </template>
 <script>
 export default {
-  name: "secondhand",
+  name: "article",
   data() {
     return {
       navData: ["房源审核", "房源发布"],
       housename: "", // 要查询的房子名称关键词
       houseData: [], // 房子信息列表
+      total: 0,
+      pageNum: 1,
+      pageSize: 15,
     };
   },
+  computed: {
+    // 计算页面数据如果不足一页以上的时候隐藏分页器
+    SorH() {
+      return this.pageSize >= this.total ? true : false;
+    },
+  },
+  created() {
+    this.getHouseInfo();
+  },
   methods: {
+    // 获取初始化租房信息
+    async getHouseInfo() {
+      const {
+        data: {
+          code,
+          data: { records, total },
+        },
+      } = await houseInfo(this.pageNum, this.pageSize, "0", "2");
+      if (code === 200) {
+        this.$message.success(`获取数据成功，一共有${total}条数据`);
+        this.houseData = records;
+        this.total = total;
+      }
+    },
+    // 改变页面显示条目数回调
+    handleSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      this.getHouseInfo();
+    },
+    // 改变当前页码回调
+    handleCurrentChange(pageNum) {
+      this.pageNum = pageNum;
+      this.getHouseInfo();
+    },
+    // 处理状态的回调
+    statusHandler({ id }) {
+      this.$confirm("确定下架该房源吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          const {
+            data: { code },
+          } = await removeHouse(id);
+          if (code === 200) {
+            this.$message.success("删除成功");
+            this.getHouseInfo();
+          }
+        })
+        .catch(() => this.$message.info("取消下架"));
+    },
     // 清除文本框回调
     clearInput() {},
     // 搜索房源信息的回调
