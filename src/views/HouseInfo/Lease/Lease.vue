@@ -12,10 +12,11 @@
           </el-input>
         </el-col>
       </el-row>
-      <!-- 中间表格数据 -->
+      <!-- 中间表格数据，row-click 处理点击表格行时的回调 -->
       <el-table :data="houseData" border style="width: 100%">
         <el-table-column align="center" label="#" type="index" width="60"></el-table-column>
         <el-table-column align="center" label="发布人" prop="houseNickname"></el-table-column>
+        <el-table-column align="center" label="房屋类型" prop="houseTitle"></el-table-column>
         <el-table-column align="center" label="房屋配置" prop="doorModel"></el-table-column>
         <el-table-column align="center" label="房屋坐标" prop="houseAddress"></el-table-column>
         <el-table-column align="center" label="发布时间" prop="houseTime">
@@ -51,7 +52,7 @@ export default {
       pageSize: 15,
     };
   },
-  // 过滤器，格式化时间
+  // 局部过滤器，格式化时间
   filters: {
     dayForMat(value) {
       if (!value) return "";
@@ -77,6 +78,7 @@ export default {
           data: { records, total },
         },
       } = await houseInfo(this.pageNum, this.pageSize, "0", "2");
+      console.log(records);
       if (code === 200) {
         this.$message.success(`获取数据成功，一共有${total}条数据`);
         this.houseData = records;
@@ -95,7 +97,7 @@ export default {
     },
     // 处理状态的回调
     statusHandler({ id }) {
-      this.$confirm("确定下架该房源吗？", "提示", {
+      this.$confirm("是否下架该房源？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -105,7 +107,7 @@ export default {
             data: { code },
           } = await removeHouse(id);
           if (code === 200) {
-            this.$message.success("删除成功");
+            this.$message.success("下架成功");
             this.getHouseInfo();
           }
         })

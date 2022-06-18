@@ -119,7 +119,7 @@ export default {
           name: "房源审核",
           children: [
             {
-              routeName: "article",
+              routeName: "issue",
               iconName1: "icon-near-info",
               childrenName: "房源发布",
             },
