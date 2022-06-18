@@ -18,6 +18,7 @@ Vue.component('BreadCrumb', BreadCrumb);
 // 引入封装的axios文件并挂载到Vue的原型上
 import request from '@/axios/index.js';
 
+// springboot的接口
 Vue.prototype.$request = request;
 
 Vue.config.productionTip = false;

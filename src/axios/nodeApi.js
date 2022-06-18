@@ -6,7 +6,7 @@ import 'nprogress/nprogress.css';
 // 初始化配置 axios
 const request = axios.create({
     // 配置根路径方便请求
-    baseURL: 'http://47.115.221.150:8081/',
+    baseURL: 'http://127.0.0.1:8081/',
     // 设置请求最大时限
     timeout: 1000,
 });
