@@ -31,7 +31,7 @@
         </el-table-column>
       </el-table>
       <!-- 底部分页器 -->
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :hide-on-single-page="SorH" background :current-page="pageNum" :page-sizes="[15, 20, 25, 30]" :page-size="pageSize"
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :hide-on-single-page="SorH" background :current-page="pageNum" :page-sizes="[5, 10, 15, 20]" :page-size="pageSize"
         layout="->, total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </el-card>
@@ -48,7 +48,7 @@ export default {
       issueData: [], // 待发布房源信息列表
       total: 0,
       pageNum: 1,
-      pageSize: 15,
+      pageSize: 5,
     };
   },
   // 局部过滤器，格式化时间
@@ -77,7 +77,7 @@ export default {
           data: { records, total },
         },
       } = await issueInfo(this.pageNum, this.pageSize, "0", "0");
-      console.log(records);
+      //   console.log(records);
       if (code === 200) {
         this.$message.success(`获取数据成功，一共有${total}条数据`);
         this.issueData = records;

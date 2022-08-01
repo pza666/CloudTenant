@@ -29,8 +29,8 @@
             <header class="headerInfo">
               <img class="imgLogo" title="631全都对" alt="631全都对" src="@/assets/logo.png">
               <div class="hInfo">
-                <h1>全都队</h1>
-                <p>云租客后台管理系统，包含：后台权限、用户信息、房源信息、内容审核</p>
+                <h1>云租客</h1>
+                <p>云租客后台管理系统，包含：后台权限、用户信息、房源信息、房源审核</p>
               </div>
             </header>
             <article class="articlerInfo">
@@ -45,7 +45,7 @@
               </div>
             </article>
             <footer class="footerInfo">
-              <p><span class="fTitle">团队成员：</span>彭梓岸、杨桓国、陶富、程浩然、谢瑞辉、杨壮飞</p>
+              <p><span class="fTitle">团队成员：</span>彭梓岸</p>
               <p><span class="fTitle">联系方式：</span>187********</p>
               <p><span class="fTitle">电子邮箱：</span>122*******@qq.com</p>
               <p><span class="fTitle">产品理念：</span>云租客是一家垂直具有单一性的房地产网络平台；是一个以技术为驱动，以用户为核心，注重房源真实和经纪人信誉的专业的房屋租售平台。</p>

@@ -19,7 +19,11 @@
         <el-table-column align="center" label="用户名" prop="nickname"></el-table-column>
         <el-table-column align="center" label="用户ID" prop="openid"></el-table-column>
         <el-table-column align="center" label="微信号" prop="weixin"></el-table-column>
-        <el-table-column align="center" label="头像" prop="avatarUrl"></el-table-column>
+        <el-table-column align="center" label="头像" prop="avatarUrl">
+          <template slot-scope="{row}">
+            <img :src="row.avatarUrl" style="width:50px">
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="{row}">
             <!-- 修改或删除用户的操作按钮 -->
@@ -88,7 +92,7 @@ export default {
   computed: {
     // 计算页面数据如果不足一页以上的时候隐藏分页器
     SorH() {
-      return this.pageSize >= this.total ? true : false;
+      return this.pageSize >= this.total;
     },
   },
   watch: {
@@ -151,12 +155,11 @@ export default {
     },
     500),
     // 清除文本框重新获取数据的回调
-    clearInput() {
-      this.getUserInfo();
-    },
+    // clearInput() {
+    //   //   this.getUserInfo();
+    // },
     // 页码值发生改变调用该回调
     handleCurrentChange(pageNum) {
-      console.log("触发了");
       // 1、先把最新页码值给到data中的pageNum
       this.pageNum = pageNum;
       // 2、然后判断搜索框里是否有值，去调用对应的回调并且传入对应的参数

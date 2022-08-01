@@ -24,6 +24,9 @@ request.interceptors.request.use(config => {
     if (tokenStr) {
         config.headers.Authorization = tokenStr;
     }
+    // else {
+    //     config.headers.Authorization = 'sasdasdwqweqwesdasdas';
+    // }
     return config;
 });
 

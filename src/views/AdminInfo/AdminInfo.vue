@@ -117,25 +117,6 @@ export default {
         cb(new Error("请输入合法的邮箱"));
       }
     };
-    // // 验证邮箱的规则
-    // var checkEmail = (rule, value, cb) => {
-    //     // 验证邮箱的正则表达式
-    //     const regEmail = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
-    //     if (regEmail.test(value)) {
-    //         return cb()
-    //     }
-    //     cb(new Error('请输入合法的邮箱'))
-    // }
-    // // 验证手机号的规则
-    // var checkphone = (rule, value, cb) => {
-    //     console.log(rule);
-    //     // 验证手机号的正则表达式
-    //     const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
-    //     if (regMobile.test(value)) {
-    //         return cb()
-    //     }
-    //     cb(new Error('请输入合法的手机号'))
-    // }
     return {
       navData: ["后台管理", "管理员"], // 面包屑文字数据
       title: "",
